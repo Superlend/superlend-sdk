@@ -8,3 +8,4 @@ test-results
 .next
 storybook-static
 docs/reference
+.DS_Store

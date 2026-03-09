@@ -1,21 +1,18 @@
 import type { ResultAsync } from "neverthrow";
 import { request } from "./lib/request.utils";
 import {
-  calldataResponseSchema,
-  opportunitiesResponseSchema,
-  supportedChainsSchema,
-  supportedTokensSchema,
+  apiResponseSchema,
+  supplyCalldataResponseSchema,
+  tokenMarketsResponseSchema,
 } from "./schemas/api.schemas";
 import { SDK_DEFAULT_BASE_URL } from "./sdk.constants";
 import type {
-  CalldataRequest,
-  CalldataResponse,
   ClientConfig,
   HttpError,
-  OpportunitiesRequest,
-  OpportunitiesResponse,
-  SupportedChain,
-  SupportedToken,
+  SupplyCalldataRequest,
+  SupplyCalldataResponse,
+  TokenMarketsRequest,
+  TokenMarketsResponse,
 } from "./types";
 
 export class SuperLendClient {
@@ -43,65 +40,35 @@ export class SuperLendClient {
     return h;
   }
 
-  getOpportunities(
-    params: OpportunitiesRequest,
-  ): ResultAsync<OpportunitiesResponse, HttpError> {
-    const searchParams = new URLSearchParams({
-      token: params.token,
-      chainId: String(params.chainId),
-    });
-    if (params.actions) {
-      searchParams.set("actions", params.actions.join(","));
-    }
-    if (params.limit !== undefined) {
-      searchParams.set("limit", String(params.limit));
-    }
-
+  getTokenMarkets(
+    params: TokenMarketsRequest,
+  ): ResultAsync<TokenMarketsResponse, HttpError> {
     return request(
-      `${this.baseUrl}/opportunities?${searchParams.toString()}`,
-      opportunitiesResponseSchema,
+      `${this.baseUrl}/sdk/markets/token`,
+      apiResponseSchema(tokenMarketsResponseSchema),
       {
+        method: "POST",
+        body: params as unknown as Record<string, unknown>,
         headers: this.headers,
         timeout: this.timeout,
         retries: this.retries,
       },
-    );
+    ).map((res) => res.data);
   }
 
-  getCalldata(
-    params: CalldataRequest,
-  ): ResultAsync<CalldataResponse, HttpError> {
-    return request(`${this.baseUrl}/calldata`, calldataResponseSchema, {
-      method: "POST",
-      body: params,
-      headers: this.headers,
-      timeout: this.timeout,
-      retries: this.retries,
-    });
-  }
-
-  getSupportedChains(): ResultAsync<SupportedChain[], HttpError> {
-    return request(`${this.baseUrl}/supported-chains`, supportedChainsSchema, {
-      headers: this.headers,
-      timeout: this.timeout,
-      retries: this.retries,
-    });
-  }
-
-  getSupportedTokens(
-    chainId: number,
-  ): ResultAsync<SupportedToken[], HttpError> {
-    const searchParams = new URLSearchParams({
-      chainId: String(chainId),
-    });
+  buildSupplyCalldata(
+    params: SupplyCalldataRequest,
+  ): ResultAsync<SupplyCalldataResponse, HttpError> {
     return request(
-      `${this.baseUrl}/supported-tokens?${searchParams.toString()}`,
-      supportedTokensSchema,
+      `${this.baseUrl}/sdk/action/supply`,
+      apiResponseSchema(supplyCalldataResponseSchema),
       {
+        method: "POST",
+        body: params as unknown as Record<string, unknown>,
         headers: this.headers,
         timeout: this.timeout,
         retries: this.retries,
       },
-    );
+    ).map((res) => res.data);
   }
 }

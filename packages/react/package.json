@@ -1,5 +1,5 @@
 {
-  "name": "@superlend/sdk",
+  "name": "@superlend/react",
   "version": "0.1.0",
   "type": "module",
   "exports": {
@@ -27,17 +27,38 @@
     "test:watch": "vitest",
     "lint": "biome check src/",
     "format": "biome check --write src/",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
-    "neverthrow": "^8.2.0",
-    "ofetch": "^1.5.1",
-    "zod": "^4.3.6"
+    "@base-ui/react": "^1.2.0",
+    "@superlend/sdk": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
+    "@storybook/react-vite": "^10.2.0",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^25.3.3",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "happy-dom": "^20.8.3",
     "msw": "^2.12.10",
+    "msw-storybook-addon": "^2.0.0",
+    "storybook": "^10.2.0",
     "tsup": "^8.5.1",
     "vitest": "^4.0.18"
+  },
+  "peerDependenciesMeta": {
+    "viem": {
+      "optional": true
+    },
+    "wagmi": {
+      "optional": true
+    }
   }
 }

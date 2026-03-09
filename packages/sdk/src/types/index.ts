@@ -1,52 +1,96 @@
-export type ActionType = "lend" | "loop";
+export type TokenInfo = {
+  address: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  logo: string;
+  priceUsd: number;
+};
 
-export type Opportunity = {
-  id: string;
-  protocol: string;
-  chainId: number;
-  token: string;
-  action: ActionType;
+export type CuratorInfo = {
+  name: string;
+  logo: string;
+};
+
+export type PlatformInfo = {
+  name: string;
+  displayName: string;
+  platformName: string;
+  protocolId: number;
+  platformId: string;
+  logo: string;
+  vault?: string | null;
+  type: string;
+  redirectionUrl: string;
+  curator?: CuratorInfo;
+};
+
+export type RewardBreakdown = {
   apy: number;
-  tvl: number;
-  metadata: Record<string, unknown>;
+  token: TokenInfo;
 };
 
-export type OpportunitiesRequest = {
-  token: string;
+export type RateCurrent = {
+  base: number;
+  reward: number;
+  net: number;
+  rewardBreakdown: RewardBreakdown[];
+};
+
+export type RateInfo = {
+  current: RateCurrent;
+  avg_7d: number | null;
+  avg_30d: number | null;
+};
+
+export type Market = {
+  token: TokenInfo;
   chainId: number;
-  actions?: ActionType[];
-  limit?: number;
+  platform: PlatformInfo;
+  supplyRate: RateInfo;
+  borrowRate: RateInfo;
+  totalSuppliedToken: number;
+  totalSuppliedUsd: number;
+  supplyCapToken: number;
+  remainingSupplyCap: number;
+  totalBorrowedToken: number;
+  totalBorrowedUsd: number;
+  totalLiquidityToken: number;
+  totalLiquidityUsd: number;
+  borrowCap: number;
+  ltv: number;
+  lltv: number;
+  utilizationRate: number;
+  canUseAsCollateral: boolean;
+  isBorrowEnabled: boolean;
+  collateralExposure: string[];
+  collateralTokens: string[];
+  merklRewards?: unknown[];
+  riskRating: unknown;
 };
 
-export type OpportunitiesResponse = {
-  opportunities: Opportunity[];
+export type TokenMarketsRequest = {
+  chainId: number;
+  tokenAddress: string;
 };
 
-export type CalldataRequest = {
-  opportunityId: string;
-  userAddress: string;
+export type TokenMarketsResponse = {
+  markets: Market[];
+  total: number;
+};
+
+export type SupplyCalldataRequest = {
+  protocolId: number;
+  platformId: string;
+  token: string;
   amount: string;
-  token: string;
-  chainId: number;
+  userAddress: string;
 };
 
-export type CalldataResponse = {
+export type SupplyCalldataResponse = {
   to: string;
   data: string;
   value: string;
-  chainId: number;
-};
-
-export type SupportedChain = {
-  chainId: number;
-  name: string;
-};
-
-export type SupportedToken = {
-  address: string;
-  symbol: string;
-  decimals: number;
-  chainId: number;
 };
 
 export type HttpErrorCode =
@@ -76,4 +120,10 @@ export type RequestOptions = {
   headers?: Record<string, string>;
   timeout?: number;
   retries?: number;
+};
+
+export type ApiResponse<T> = {
+  success: boolean;
+  message: string;
+  data: T;
 };
