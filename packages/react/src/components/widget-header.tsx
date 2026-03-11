@@ -3,11 +3,11 @@ import type { CSSProperties } from "react";
 import { useTheme } from "../context/theme.context";
 
 type WidgetHeaderProps = {
-  token: string;
-  amount: string;
+  title: string;
+  onBack?: () => void;
 };
 
-const WidgetHeader: React.FC<WidgetHeaderProps> = ({ token, amount }) => {
+const WidgetHeader: React.FC<WidgetHeaderProps> = ({ title, onBack }) => {
   const theme = useTheme();
 
   const containerStyle: CSSProperties = {
@@ -16,24 +16,41 @@ const WidgetHeader: React.FC<WidgetHeaderProps> = ({ token, amount }) => {
     padding: "0 0 12px 0",
     background: theme.bg,
     zIndex: 1,
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
   };
 
-  const swapTextStyle: CSSProperties = {
-    fontSize: "13px",
-    color: `${theme.text}99`,
-    margin: 0,
+  const backStyle: CSSProperties = {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: "4px",
+    fontSize: "16px",
+    color: theme.text,
+    fontFamily: "inherit",
+    lineHeight: 1,
+    borderRadius: "4px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   };
 
   const headingStyle: CSSProperties = {
     fontSize: "15px",
     fontWeight: 600,
     color: theme.text,
-    margin: "4px 0 0 0",
+    margin: 0,
   };
 
   return (
     <div style={containerStyle}>
-      <p style={headingStyle}>{token} Lending Opportunities</p>
+      {onBack && (
+        <button type="button" style={backStyle} onClick={onBack} aria-label="Go back">
+          ←
+        </button>
+      )}
+      <p style={headingStyle}>{title}</p>
     </div>
   );
 };

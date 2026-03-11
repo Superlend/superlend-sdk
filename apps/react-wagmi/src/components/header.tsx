@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils"
 
 const navItems = [
   { to: "/", label: "Inline" },
-  { to: "/compact", label: "Compact" },
   { to: "/dialog", label: "Dialog" },
 ] as const
 

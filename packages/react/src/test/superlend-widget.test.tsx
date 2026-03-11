@@ -94,7 +94,7 @@ describe("SuperLendWidget", () => {
     });
   });
 
-  it("displays header with token symbol and amount", async () => {
+  it("displays header with token symbol", async () => {
     server.use(
       http.post(`${BASE_URL}/sdk/markets/token`, () => {
         return HttpResponse.json(mockMarketsResponse);
@@ -105,13 +105,9 @@ describe("SuperLendWidget", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Successfully swapped 10000000 USDC"),
+        screen.getByText("USDC Lending Opportunities"),
       ).toBeTruthy();
     });
-
-    expect(
-      screen.getByText("Let's put them to good use"),
-    ).toBeTruthy();
   });
 
   it("displays powered by footer", async () => {
@@ -146,25 +142,5 @@ describe("SuperLendWidget", () => {
         screen.getByText("No opportunities available"),
       ).toBeTruthy();
     });
-  });
-
-  it("renders compact variant with single market", async () => {
-    server.use(
-      http.post(`${BASE_URL}/sdk/markets/token`, () => {
-        return HttpResponse.json(mockMarketsResponse);
-      }),
-    );
-
-    renderWidget({ variant: "compact" });
-
-    await waitFor(() => {
-      expect(
-        screen.getByText("Steakhouse Reservoir USDC"),
-      ).toBeTruthy();
-    });
-
-    // Compact only shows the first market
-    expect(screen.queryByText("Steakhouse USDC")).toBeNull();
-    expect(screen.queryByText("EVK Vault eUSDC-95")).toBeNull();
   });
 });

@@ -1,13 +1,21 @@
 import type { WalletClient } from "../types";
 
+const ERC20_ALLOWANCE_SIG = "0xdd62ed3e"; // keccak256("allowance(address,uint256)") first 4 bytes
+
 interface ViemWalletClient {
-  sendTransaction: (params: {
-    to: `0x${string}`;
-    data: `0x${string}`;
-    value: bigint;
-    chain?: unknown;
-  }) => Promise<`0x${string}`>;
-  chain?: unknown;
+  // biome-ignore lint: accept any viem-compatible sendTransaction signature
+  sendTransaction: (params: any) => Promise<`0x${string}`>;
+  chain?: { id: number } | null;
+  switchChain?: (params: { id: number }) => Promise<void>;
+}
+
+interface ViemPublicClient {
+  readContract: (params: {
+    address: `0x${string}`;
+    abi: readonly unknown[];
+    functionName: string;
+    args: readonly unknown[];
+  }) => Promise<unknown>;
 }
 
 interface EthersSigner {
@@ -16,6 +24,9 @@ interface EthersSigner {
     data: string;
     value: bigint;
   }) => Promise<{ hash: string }>;
+  provider?: {
+    getNetwork: () => Promise<{ chainId: bigint }>;
+  };
 }
 
 interface Web3Account {
@@ -27,24 +38,62 @@ interface Web3Account {
   }) => Promise<{ transactionHash: string }>;
 }
 
+const ERC20_ALLOWANCE_ABI = [
+  {
+    name: "allowance",
+    type: "function",
+    stateMutability: "view",
+    inputs: [
+      { name: "owner", type: "address" },
+      { name: "spender", type: "address" },
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+] as const;
+
 /**
  * Adapts a viem `WalletClient` (or wagmi's `useWalletClient`) for use with the widget.
+ * Pass an optional `publicClient` to enable on-chain allowance checks.
  *
  * @example
  * const { data: walletClient } = useWalletClient()
- * <SuperLendWidget walletClient={walletAdapters.fromViem(walletClient)} />
+ * const publicClient = usePublicClient()
+ * walletAdapters.fromViem(walletClient, publicClient)
  */
-function fromViem(client: ViemWalletClient): WalletClient {
+function fromViem(client: ViemWalletClient, publicClient?: ViemPublicClient): WalletClient {
   return {
     sendTransaction: async ({ to, data, value, chainId }) => {
       const hash = await client.sendTransaction({
         to: to as `0x${string}`,
         data: data as `0x${string}`,
         value: BigInt(value),
-        chain: client.chain as never,
+        // Pass null to skip viem's chain assertion. After switchChain, the
+        // wagmi wallet client object is stale — client.chain still reflects
+        // the old chain. null tells viem to send on whatever chain the wallet
+        // is currently connected to.
+        chain: null as any,
       });
       return hash;
     },
+    switchChain: client.switchChain
+      ? async (chainId: number) => {
+          await client.switchChain!({ id: chainId });
+        }
+      : undefined,
+    get chainId() {
+      return client.chain?.id;
+    },
+    getAllowance: publicClient
+      ? async ({ tokenAddress, owner, spender }) => {
+          const result = await publicClient.readContract({
+            address: tokenAddress as `0x${string}`,
+            abi: ERC20_ALLOWANCE_ABI,
+            functionName: "allowance",
+            args: [owner, spender],
+          });
+          return BigInt(result as string | number | bigint);
+        }
+      : undefined,
   };
 }
 

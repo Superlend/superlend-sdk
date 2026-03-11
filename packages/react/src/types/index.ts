@@ -1,6 +1,6 @@
 import type { Market, SupplyCalldataResponse } from "@superlend/sdk";
 
-export type WidgetVariant = "inline" | "dialog" | "compact";
+export type WidgetVariant = "inline" | "dialog";
 
 /** CSS colour values for theming the widget. All fields are optional — unset fields fall back to defaults. */
 export type ThemeConfig = {
@@ -62,4 +62,20 @@ export type WalletClient = {
     value: string;
     chainId: number;
   }) => Promise<string>;
+  /**
+   * Switch the wallet to a different chain. If provided, the widget will
+   * automatically prompt a chain switch when the wallet is on the wrong network.
+   */
+  switchChain?: (chainId: number) => Promise<void>;
+  /** Current chain ID of the connected wallet. Used to detect chain mismatches. */
+  chainId?: number;
+  /**
+   * Read the ERC-20 allowance for a token. If provided, the widget will
+   * check allowance before sending a redundant approval transaction.
+   */
+  getAllowance?: (params: {
+    tokenAddress: string;
+    owner: string;
+    spender: string;
+  }) => Promise<bigint>;
 };

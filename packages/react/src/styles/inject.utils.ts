@@ -43,6 +43,17 @@ const buildCss = (theme: ResolvedTheme): string => {
 .sl-widget-scroll::-webkit-scrollbar-thumb:hover {
   background: ${theme.accent};
 }
+.sl-amount-input:focus-visible {
+  outline: none;
+}
+.sl-spinner {
+  display: inline-block;
+  animation: sl-spin 1s linear infinite;
+}
+@keyframes sl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 `.trim();
 };
 

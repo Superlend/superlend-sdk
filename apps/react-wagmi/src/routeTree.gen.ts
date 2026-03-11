@@ -10,17 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DialogRouteImport } from './routes/dialog'
-import { Route as CompactRouteImport } from './routes/compact'
 import { Route as IndexRouteImport } from './routes/index'
 
 const DialogRoute = DialogRouteImport.update({
   id: '/dialog',
   path: '/dialog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CompactRoute = CompactRouteImport.update({
-  id: '/compact',
-  path: '/compact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,31 +25,27 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/compact': typeof CompactRoute
   '/dialog': typeof DialogRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/compact': typeof CompactRoute
   '/dialog': typeof DialogRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/compact': typeof CompactRoute
   '/dialog': typeof DialogRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/compact' | '/dialog'
+  fullPaths: '/' | '/dialog'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/compact' | '/dialog'
-  id: '__root__' | '/' | '/compact' | '/dialog'
+  to: '/' | '/dialog'
+  id: '__root__' | '/' | '/dialog'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CompactRoute: typeof CompactRoute
   DialogRoute: typeof DialogRoute
 }
 
@@ -66,13 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/dialog'
       fullPath: '/dialog'
       preLoaderRoute: typeof DialogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/compact': {
-      id: '/compact'
-      path: '/compact'
-      fullPath: '/compact'
-      preLoaderRoute: typeof CompactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -87,7 +70,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CompactRoute: CompactRoute,
   DialogRoute: DialogRoute,
 }
 export const routeTree = rootRouteImport

@@ -2,14 +2,17 @@ import { SuperLendClient } from "@superlend/sdk";
 import type { Market } from "@superlend/sdk";
 import type React from "react";
 import type { CSSProperties } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { ThemeContext, resolveTheme } from "../context/theme.context";
 import { useMarkets } from "../hooks/opportunities.hooks";
 import { useTransaction } from "../hooks/transaction.hooks";
+import { useWidgetFlow } from "../hooks/widget-flow.hooks";
 import { injectStyles } from "../styles/inject.utils";
 import type { WidgetProps } from "../types";
+import { AmountInput } from "./amount-input";
 import { MarketCard } from "./opportunity-card";
 import { PoweredBy } from "./powered-by";
+import { TransactionFlow } from "./transaction-flow";
 import { WidgetDialog } from "./widget-dialog";
 import { WidgetHeader } from "./widget-header";
 import { WidgetSkeleton } from "./widget-skeleton";
@@ -23,7 +26,6 @@ type WidgetContentProps = {
   limit?: number;
   walletClient?: WidgetProps["walletClient"];
   onAction?: WidgetProps["onAction"];
-  compact?: boolean;
 };
 
 const WidgetContent: React.FC<WidgetContentProps> = ({
@@ -35,25 +37,56 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
   limit,
   walletClient,
   onAction,
-  compact,
 }) => {
   const { data, isLoading, error } = useMarkets(client, {
     tokenAddress,
     chainId,
   });
 
-  const { execute } = useTransaction({
-    client,
-    walletClient,
-    onAction,
-  });
+  const flow = useWidgetFlow();
+  const tx = useTransaction({ client, walletClient });
 
-  const handleSelect = (market: Market) => {
-    execute({
+  const handleSelectMarket = (market: Market) => {
+    flow.selectMarket(market);
+  };
+
+  const handleConfirmAmount = async (rawAmount: string) => {
+    if (!flow.state.view || flow.state.view !== "amount-input") return;
+    const market = flow.state.market;
+
+    // onAction mode: build calldata and hand off, never show transaction view
+    if (onAction) {
+      const result = await client.buildSupplyCalldata({
+        protocolId: market.platform.protocolId,
+        platformId: market.platform.platformId,
+        token: market.token.address,
+        amount: rawAmount,
+        userAddress: userAddress ?? "",
+      });
+      if (result.isOk()) {
+        onAction(market, result.value);
+      }
+      flow.reset();
+      return;
+    }
+
+    // walletClient mode: transition to transaction view and execute
+    flow.confirmAmount(rawAmount);
+    tx.execute({
       market,
       userAddress: userAddress ?? "",
-      amount,
+      amount: rawAmount,
     });
+  };
+
+  const handleDone = () => {
+    tx.reset();
+    flow.reset();
+  };
+
+  const handleBack = () => {
+    tx.reset();
+    flow.goBack();
   };
 
   if (isLoading) {
@@ -82,12 +115,41 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
     return <div style={emptyStyle}>No opportunities available</div>;
   }
 
-  const displayMarkets = compact
-    ? markets.slice(0, 1)
-    : limit
-      ? markets.slice(0, limit)
-      : markets;
+  // Transaction view
+  if (flow.state.view === "transaction") {
+    return (
+      <>
+        <WidgetHeader title="Transaction" />
+        <TransactionFlow
+          market={flow.state.market}
+          amount={flow.state.amount}
+          steps={tx.steps}
+          onRetry={tx.retry}
+          onDone={handleDone}
+          isPending={tx.isPending}
+          isSuccess={tx.isSuccess}
+        />
+      </>
+    );
+  }
 
+  // Amount input view
+  if (flow.state.view === "amount-input") {
+    return (
+      <>
+        <WidgetHeader title="Enter Amount" onBack={handleBack} />
+        <AmountInput
+          market={flow.state.market}
+          defaultAmount={amount}
+          onConfirm={handleConfirmAmount}
+          onBack={handleBack}
+        />
+      </>
+    );
+  }
+
+  // Opportunities list view (default)
+  const displayMarkets = limit ? markets.slice(0, limit) : markets;
   const tokenSymbol = markets[0]?.token.symbol ?? "";
 
   const listStyle: CSSProperties = {
@@ -98,13 +160,13 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
 
   return (
     <>
-      {!compact && <WidgetHeader token={tokenSymbol} amount={amount} />}
+      <WidgetHeader title={`${tokenSymbol} Lending Opportunities`} />
       <div style={listStyle}>
         {displayMarkets.map((market) => (
           <MarketCard
             key={market.platform.platformId}
             market={market}
-            onSelect={handleSelect}
+            onSelect={handleSelectMarket}
           />
         ))}
       </div>
@@ -140,17 +202,14 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
     injectStyles(resolvedTheme);
   }, [resolvedTheme]);
 
-  const compact = variant === "compact";
-
   const containerStyle: CSSProperties = {
     background: resolvedTheme.bg,
     borderRadius: resolvedTheme.radius,
     border: `1px solid ${resolvedTheme.border}`,
-    padding: compact ? "8px" : undefined,
-    paddingTop: compact ? undefined : "16px",
-    display: compact ? undefined : "flex",
-    flexDirection: compact ? undefined : "column",
-    maxHeight: compact ? undefined : "400px",
+    paddingTop: "16px",
+    display: "flex",
+    flexDirection: "column",
+    maxHeight: "400px",
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     color: resolvedTheme.text,
@@ -176,7 +235,6 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
       limit={limit}
       walletClient={walletClient}
       onAction={onAction}
-      compact={compact}
     />
   );
 
@@ -184,14 +242,6 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
     return (
       <ThemeContext.Provider value={resolvedTheme}>
         <WidgetDialog>{widgetContent}</WidgetDialog>
-      </ThemeContext.Provider>
-    );
-  }
-
-  if (compact) {
-    return (
-      <ThemeContext.Provider value={resolvedTheme}>
-        <div style={containerStyle}>{widgetContent}</div>
       </ThemeContext.Provider>
     );
   }
