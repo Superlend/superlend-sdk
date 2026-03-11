@@ -158,6 +158,7 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
             steps={tx.steps}
             onRetry={tx.retry}
             onDone={handleDone}
+            onStartOver={handleDone}
             isPending={tx.isPending}
             isSuccess={tx.isSuccess}
           />

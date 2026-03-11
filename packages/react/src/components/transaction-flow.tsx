@@ -15,6 +15,7 @@ type TransactionFlowProps = {
   steps: TransactionSteps;
   onRetry: () => void;
   onDone: () => void;
+  onStartOver: () => void;
   isPending: boolean;
   isSuccess: boolean;
 };
@@ -40,10 +41,11 @@ type StepRowProps = {
   status: StepStatus;
   error?: string;
   onRetry: () => void;
+  onStartOver: () => void;
   index: number;
 };
 
-const StepRow: React.FC<StepRowProps> = ({ label, status, error, onRetry, index }) => {
+const StepRow: React.FC<StepRowProps> = ({ label, status, error, onRetry, onStartOver, index }) => {
   const theme = useTheme();
 
   const rowStyle: CSSProperties = {
@@ -135,17 +137,16 @@ const StepRow: React.FC<StepRowProps> = ({ label, status, error, onRetry, index 
         </AnimatePresence>
         <AnimatePresence>
           {status === "error" && (
-            <motion.button
-              type="button"
-              style={retryStyle}
-              onClick={onRetry}
+            <motion.div
+              style={{ display: "flex", gap: "12px" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={spring}
             >
-              Retry
-            </motion.button>
+              <button type="button" style={retryStyle} onClick={onRetry}>Retry</button>
+              <button type="button" style={retryStyle} onClick={onStartOver}>Start Over</button>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
@@ -159,6 +160,7 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
   steps,
   onRetry,
   onDone,
+  onStartOver,
   isPending,
   isSuccess,
 }) => {
@@ -202,6 +204,7 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
             status={steps.switchChain.status}
             error={steps.switchChain.error}
             onRetry={onRetry}
+            onStartOver={onStartOver}
             index={stepIndex++}
           />
         )}
@@ -211,6 +214,7 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
             status={steps.approval.status}
             error={steps.approval.error}
             onRetry={onRetry}
+            onStartOver={onStartOver}
             index={stepIndex++}
           />
         )}
@@ -219,6 +223,7 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
           status={steps.supply.status}
           error={steps.supply.error}
           onRetry={onRetry}
+          onStartOver={onStartOver}
           index={stepIndex++}
         />
       </div>
@@ -229,7 +234,7 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
             animate={{ opacity: 1, scale: 1 }}
             transition={spring}
           >
-            <ActionButton label="Done" onClick={onDone} />
+            <ActionButton label="Supply More" onClick={onDone} />
           </motion.div>
         )}
       </AnimatePresence>
