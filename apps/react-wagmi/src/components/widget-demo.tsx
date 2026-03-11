@@ -56,7 +56,7 @@ export function WidgetDemo({ variant, useCallback }: WidgetDemoProps) {
         chainId={network.chainId}
         userAddress={address}
         variant={variant}
-        baseUrl=""
+        baseUrl={import.meta.env.VITE_SUPERLEND_API_URL ?? ""}
         walletClient={useCallback ? undefined : walletClient}
         onAction={handleAction}
         theme={theme}
