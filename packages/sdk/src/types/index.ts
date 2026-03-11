@@ -33,6 +33,7 @@ export type RewardBreakdown = {
 export type RateCurrent = {
   base: number;
   reward: number;
+  /** Base + reward combined. */
   net: number;
   rewardBreakdown: RewardBreakdown[];
 };
@@ -43,6 +44,7 @@ export type RateInfo = {
   avg_30d: number | null;
 };
 
+/** A single lending market opportunity returned by `getTokenMarkets`. */
 export type Market = {
   token: TokenInfo;
   chainId: number;
@@ -58,7 +60,9 @@ export type Market = {
   totalLiquidityToken: number;
   totalLiquidityUsd: number;
   borrowCap: number;
+  /** Loan-to-value ratio. */
   ltv: number;
+  /** Liquidation LTV. */
   lltv: number;
   utilizationRate: number;
   canUseAsCollateral: boolean;
@@ -83,10 +87,12 @@ export type SupplyCalldataRequest = {
   protocolId: number;
   platformId: string;
   token: string;
+  /** Raw token amount in the token's smallest unit. */
   amount: string;
   userAddress: string;
 };
 
+/** Raw transaction fields — pass directly to your wallet's `sendTransaction`. */
 export type SupplyCalldataResponse = {
   to: string;
   data: string;
@@ -100,17 +106,24 @@ export type HttpErrorCode =
   | "API_ERROR"
   | "VALIDATION_ERROR";
 
+/** Typed error returned by all `SuperLendClient` methods. Never thrown — always in the `Err` branch. */
 export type HttpError = {
   code: HttpErrorCode;
   message: string;
+  /** HTTP status code, present when `code` is `API_ERROR`. */
   status?: number;
 };
 
 export type ClientConfig = {
+  /** API key issued by SuperLend. Required. */
   apiKey: string;
+  /** Partner identifier for attribution. */
   partnerId?: string;
+  /** Override the API base URL. Defaults to the SuperLend production endpoint. */
   baseUrl?: string;
+  /** Request timeout in milliseconds. Defaults to 10 000. */
   timeout?: number;
+  /** Number of retries on failure. Defaults to 2. */
   retries?: number;
 };
 

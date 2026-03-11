@@ -11,7 +11,11 @@ const WidgetHeader: React.FC<WidgetHeaderProps> = ({ token, amount }) => {
   const theme = useTheme();
 
   const containerStyle: CSSProperties = {
+    position: "sticky",
+    top: 0,
     padding: "0 0 12px 0",
+    background: theme.bg,
+    zIndex: 1,
   };
 
   const swapTextStyle: CSSProperties = {
@@ -29,10 +33,7 @@ const WidgetHeader: React.FC<WidgetHeaderProps> = ({ token, amount }) => {
 
   return (
     <div style={containerStyle}>
-      <p style={swapTextStyle}>
-        Successfully swapped {amount} {token}
-      </p>
-      <p style={headingStyle}>Let's put them to good use</p>
+      <p style={headingStyle}>{token} Lending Opportunities</p>
     </div>
   );
 };

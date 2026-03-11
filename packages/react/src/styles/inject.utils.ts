@@ -30,6 +30,19 @@ const buildCss = (theme: ResolvedTheme): string => {
 .sl-powered-by:hover {
   opacity: 0.8;
 }
+.sl-widget-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.sl-widget-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sl-widget-scroll::-webkit-scrollbar-thumb {
+  background: ${theme.border};
+  border-radius: 9999px;
+}
+.sl-widget-scroll::-webkit-scrollbar-thumb:hover {
+  background: ${theme.accent};
+}
 `.trim();
 };
 

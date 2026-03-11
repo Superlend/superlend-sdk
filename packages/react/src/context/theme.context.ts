@@ -7,6 +7,7 @@ const DEFAULT_THEME: ResolvedTheme = {
   accent: "#00d395",
   text: "#ffffff",
   radius: "8px",
+  border: "rgba(255, 255, 255, 0.18)",
 };
 
 const resolveTheme = (theme?: ThemeConfig): ResolvedTheme => {

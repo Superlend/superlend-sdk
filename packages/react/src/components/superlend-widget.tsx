@@ -108,7 +108,6 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
           />
         ))}
       </div>
-      <PoweredBy />
     </>
   );
 };
@@ -141,16 +140,33 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
     injectStyles(resolvedTheme);
   }, [resolvedTheme]);
 
+  const compact = variant === "compact";
+
   const containerStyle: CSSProperties = {
     background: resolvedTheme.bg,
     borderRadius: resolvedTheme.radius,
-    padding: variant === "compact" ? "8px" : "16px",
+    border: `1px solid ${resolvedTheme.border}`,
+    padding: compact ? "8px" : undefined,
+    paddingTop: compact ? undefined : "16px",
+    display: compact ? undefined : "flex",
+    flexDirection: compact ? undefined : "column",
+    maxHeight: compact ? undefined : "400px",
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     color: resolvedTheme.text,
   };
 
-  const content = (
+  const scrollStyle: CSSProperties = {
+    flex: 1,
+    overflowY: "auto",
+    paddingLeft: "16px",
+    paddingRight: "16px",
+    scrollbarGutter: "stable both-edges",
+    scrollbarWidth: "thin",
+    scrollbarColor: `${resolvedTheme.border} transparent`,
+  };
+
+  const widgetContent = (
     <WidgetContent
       client={client}
       tokenAddress={tokenAddress}
@@ -160,21 +176,36 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
       limit={limit}
       walletClient={walletClient}
       onAction={onAction}
-      compact={variant === "compact"}
+      compact={compact}
     />
   );
 
   if (variant === "dialog") {
     return (
       <ThemeContext.Provider value={resolvedTheme}>
-        <WidgetDialog>{content}</WidgetDialog>
+        <WidgetDialog>{widgetContent}</WidgetDialog>
+      </ThemeContext.Provider>
+    );
+  }
+
+  if (compact) {
+    return (
+      <ThemeContext.Provider value={resolvedTheme}>
+        <div style={containerStyle}>{widgetContent}</div>
       </ThemeContext.Provider>
     );
   }
 
   return (
     <ThemeContext.Provider value={resolvedTheme}>
-      <div style={containerStyle}>{content}</div>
+      <div style={containerStyle}>
+        <div className="sl-widget-scroll" style={scrollStyle}>
+          {widgetContent}
+        </div>
+        <div style={{ paddingLeft: "16px", paddingRight: "16px" }}>
+          <PoweredBy />
+        </div>
+      </div>
     </ThemeContext.Provider>
   );
 };

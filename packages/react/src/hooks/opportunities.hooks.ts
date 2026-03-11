@@ -7,6 +7,7 @@ type UseMarketsParams = {
   limit?: number;
 };
 
+/** Fetches and caches lending markets for the given token and chain. */
 const useMarkets = (client: SuperLendClient, params: UseMarketsParams) => {
   return useQuery<TokenMarketsResponse>({
     queryKey: ["superlend", "markets", params.tokenAddress, params.chainId],

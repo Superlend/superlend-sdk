@@ -15,6 +15,19 @@ import type {
   TokenMarketsResponse,
 } from "./types";
 
+/**
+ * Headless client for the SuperLend API.
+ *
+ * All methods return `ResultAsync` — errors are typed and explicit, nothing is thrown.
+ *
+ * @example
+ * const client = new SuperLendClient({ apiKey: 'your_key' })
+ * const result = await client.getTokenMarkets({ tokenAddress: '0x...', chainId: 1 })
+ * result.match(
+ *   (data) => console.log(data.markets),
+ *   (err) => console.error(err.code, err.message),
+ * )
+ */
 export class SuperLendClient {
   private readonly baseUrl: string;
   private readonly apiKey: string;
@@ -40,6 +53,10 @@ export class SuperLendClient {
     return h;
   }
 
+  /**
+   * Returns lending markets available for a token on a given chain,
+   * sorted by supply APY descending.
+   */
   getTokenMarkets(
     params: TokenMarketsRequest,
   ): ResultAsync<TokenMarketsResponse, HttpError> {
@@ -56,6 +73,10 @@ export class SuperLendClient {
     ).map((res) => res.data);
   }
 
+  /**
+   * Builds the calldata required to supply tokens into a market.
+   * Returns raw `to`, `data`, and `value` — pass directly to your wallet for execution.
+   */
   buildSupplyCalldata(
     params: SupplyCalldataRequest,
   ): ResultAsync<SupplyCalldataResponse, HttpError> {

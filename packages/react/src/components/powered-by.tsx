@@ -10,7 +10,7 @@ const PoweredBy: React.FC = () => {
     alignItems: "center",
     justifyContent: "center",
     gap: "4px",
-    padding: "8px 0",
+    padding: "8px 0 8px 0",
     fontSize: "11px",
     color: `${theme.text}80`,
     textDecoration: "none",

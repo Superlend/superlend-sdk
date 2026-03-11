@@ -1,6 +1,7 @@
 export { SuperLendWidget } from "./components/superlend-widget";
 export { useMarkets } from "./hooks/opportunities.hooks";
 export { useTransaction } from "./hooks/transaction.hooks";
+export { walletAdapters } from "./adapters";
 
 export type {
   WidgetProps,

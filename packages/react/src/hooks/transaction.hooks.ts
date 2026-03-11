@@ -18,6 +18,10 @@ type UseTransactionOptions = {
   onAction?: (market: Market, calldata: SupplyCalldataResponse) => void;
 };
 
+/**
+ * Builds supply calldata for a selected market and either executes it via `walletClient`
+ * or forwards it to the `onAction` callback.
+ */
 const useTransaction = ({
   client,
   walletClient,
