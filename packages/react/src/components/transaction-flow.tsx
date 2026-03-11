@@ -1,10 +1,13 @@
 import type { Market } from "@superlend/sdk";
+import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import type { CSSProperties } from "react";
 import { useTheme } from "../context/theme.context";
 import type { StepStatus, TransactionSteps } from "../hooks/transaction.hooks";
 import { ActionButton } from "./action-button";
 import { SelectedMarket } from "./selected-market";
+
+const spring = { type: "spring" as const, stiffness: 300, damping: 30 };
 
 type TransactionFlowProps = {
   market: Market;
@@ -37,9 +40,10 @@ type StepRowProps = {
   status: StepStatus;
   error?: string;
   onRetry: () => void;
+  index: number;
 };
 
-const StepRow: React.FC<StepRowProps> = ({ label, status, error, onRetry }) => {
+const StepRow: React.FC<StepRowProps> = ({ label, status, error, onRetry, index }) => {
   const theme = useTheme();
 
   const rowStyle: CSSProperties = {
@@ -95,24 +99,57 @@ const StepRow: React.FC<StepRowProps> = ({ label, status, error, onRetry }) => {
   };
 
   return (
-    <div style={rowStyle}>
-      <span style={iconStyle}>
+    <motion.div
+      style={rowStyle}
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ ...spring, delay: index * 0.06 }}
+    >
+      <motion.span
+        style={iconStyle}
+        key={status}
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={spring}
+      >
         {status === "pending" ? (
           <span className="sl-spinner">{statusIcons.pending}</span>
         ) : (
           statusIcons[status]
         )}
-      </span>
+      </motion.span>
       <div style={contentStyle}>
         <span style={labelStyle}>{label}</span>
-        {status === "error" && error && <span style={errorStyle}>{error}</span>}
-        {status === "error" && (
-          <button type="button" style={retryStyle} onClick={onRetry}>
-            Retry
-          </button>
-        )}
+        <AnimatePresence>
+          {status === "error" && error && (
+            <motion.span
+              style={errorStyle}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={spring}
+            >
+              {error}
+            </motion.span>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {status === "error" && (
+            <motion.button
+              type="button"
+              style={retryStyle}
+              onClick={onRetry}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={spring}
+            >
+              Retry
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -150,6 +187,8 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
     padding: "4px 14px",
   };
 
+  let stepIndex = 0;
+
   return (
     <div style={containerStyle}>
       <SelectedMarket market={market} />
@@ -163,6 +202,7 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
             status={steps.switchChain.status}
             error={steps.switchChain.error}
             onRetry={onRetry}
+            index={stepIndex++}
           />
         )}
         {steps.approval.needed && (
@@ -171,6 +211,7 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
             status={steps.approval.status}
             error={steps.approval.error}
             onRetry={onRetry}
+            index={stepIndex++}
           />
         )}
         <StepRow
@@ -178,11 +219,20 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
           status={steps.supply.status}
           error={steps.supply.error}
           onRetry={onRetry}
+          index={stepIndex++}
         />
       </div>
-      {isSuccess && (
-        <ActionButton label="Done" onClick={onDone} />
-      )}
+      <AnimatePresence>
+        {isSuccess && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={spring}
+          >
+            <ActionButton label="Done" onClick={onDone} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -1,10 +1,13 @@
 import type { Market } from "@superlend/sdk";
+import { motion } from "motion/react";
 import type React from "react";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { useTheme } from "../context/theme.context";
 import { ActionButton } from "./action-button";
 import { SelectedMarket } from "./selected-market";
+
+const spring = { type: "spring" as const, stiffness: 300, damping: 30 };
 
 type AmountInputProps = {
   market: Market;
@@ -42,7 +45,6 @@ const AmountInput: React.FC<AmountInputProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
-    // Allow only valid numeric input with optional single decimal
     if (input === "" || /^\d*\.?\d*$/.test(input)) {
       setValue(input);
     }
@@ -96,7 +98,12 @@ const AmountInput: React.FC<AmountInputProps> = ({
   return (
     <div style={containerStyle}>
       <SelectedMarket market={market} />
-      <div style={inputWrapperStyle}>
+      <motion.div
+        style={inputWrapperStyle}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...spring, delay: 0.04 }}
+      >
         <input
           type="text"
           inputMode="decimal"
@@ -108,12 +115,18 @@ const AmountInput: React.FC<AmountInputProps> = ({
           autoFocus
         />
         <span style={symbolStyle}>{market.token.symbol}</span>
-      </div>
-      <ActionButton
-        label="Continue"
-        onClick={handleConfirm}
-        disabled={!isValid}
-      />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...spring, delay: 0.08 }}
+      >
+        <ActionButton
+          label="Continue"
+          onClick={handleConfirm}
+          disabled={!isValid}
+        />
+      </motion.div>
     </div>
   );
 };

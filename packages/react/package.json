@@ -31,7 +31,8 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
-    "@superlend/sdk": "workspace:*"
+    "@superlend/sdk": "workspace:*",
+    "motion": "^12.35.2"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.0.0",

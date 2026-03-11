@@ -1,8 +1,9 @@
 import { SuperLendClient } from "@superlend/sdk";
 import type { Market } from "@superlend/sdk";
+import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import type { CSSProperties } from "react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { ThemeContext, resolveTheme } from "../context/theme.context";
 import { useMarkets } from "../hooks/opportunities.hooks";
 import { useTransaction } from "../hooks/transaction.hooks";
@@ -16,6 +17,8 @@ import { TransactionFlow } from "./transaction-flow";
 import { WidgetDialog } from "./widget-dialog";
 import { WidgetHeader } from "./widget-header";
 import { WidgetSkeleton } from "./widget-skeleton";
+
+const spring = { type: "spring" as const, stiffness: 300, damping: 30 };
 
 type WidgetContentProps = {
   client: SuperLendClient;
@@ -46,6 +49,16 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
   const flow = useWidgetFlow();
   const tx = useTransaction({ client, walletClient });
 
+  const prevViewRef = useRef(flow.state.view);
+  const viewOrder = ["opportunities", "amount-input", "transaction"] as const;
+  const prevIdx = viewOrder.indexOf(prevViewRef.current as typeof viewOrder[number]);
+  const currIdx = viewOrder.indexOf(flow.state.view as typeof viewOrder[number]);
+  const direction = currIdx >= prevIdx ? 1 : -1;
+
+  useEffect(() => {
+    prevViewRef.current = flow.state.view;
+  }, [flow.state.view]);
+
   const handleSelectMarket = (market: Market) => {
     flow.selectMarket(market);
   };
@@ -54,7 +67,6 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
     if (!flow.state.view || flow.state.view !== "amount-input") return;
     const market = flow.state.market;
 
-    // onAction mode: build calldata and hand off, never show transaction view
     if (onAction) {
       const result = await client.buildSupplyCalldata({
         protocolId: market.platform.protocolId,
@@ -70,7 +82,6 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
       return;
     }
 
-    // walletClient mode: transition to transaction view and execute
     flow.confirmAmount(rawAmount);
     tx.execute({
       market,
@@ -115,42 +126,11 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
     return <div style={emptyStyle}>No opportunities available</div>;
   }
 
-  // Transaction view
-  if (flow.state.view === "transaction") {
-    return (
-      <>
-        <WidgetHeader title="Transaction" />
-        <TransactionFlow
-          market={flow.state.market}
-          amount={flow.state.amount}
-          steps={tx.steps}
-          onRetry={tx.retry}
-          onDone={handleDone}
-          isPending={tx.isPending}
-          isSuccess={tx.isSuccess}
-        />
-      </>
-    );
-  }
-
-  // Amount input view
-  if (flow.state.view === "amount-input") {
-    return (
-      <>
-        <WidgetHeader title="Enter Amount" onBack={handleBack} />
-        <AmountInput
-          market={flow.state.market}
-          defaultAmount={amount}
-          onConfirm={handleConfirmAmount}
-          onBack={handleBack}
-        />
-      </>
-    );
-  }
-
-  // Opportunities list view (default)
-  const displayMarkets = limit ? markets.slice(0, limit) : markets;
-  const tokenSymbol = markets[0]?.token.symbol ?? "";
+  const slideVariants = {
+    enter: (d: number) => ({ x: d * 60, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (d: number) => ({ x: d * -60, opacity: 0 }),
+  };
 
   const listStyle: CSSProperties = {
     display: "flex",
@@ -159,18 +139,82 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
   };
 
   return (
-    <>
-      <WidgetHeader title={`${tokenSymbol} Lending Opportunities`} />
-      <div style={listStyle}>
-        {displayMarkets.map((market) => (
-          <MarketCard
-            key={market.platform.platformId}
-            market={market}
-            onSelect={handleSelectMarket}
+    <div style={{ overflow: "hidden" }}>
+    <AnimatePresence mode="wait" custom={direction}>
+      {flow.state.view === "transaction" && (
+        <motion.div
+          key="transaction"
+          custom={direction}
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={spring}
+        >
+          <WidgetHeader title="Transaction" />
+          <TransactionFlow
+            market={flow.state.market}
+            amount={flow.state.amount}
+            steps={tx.steps}
+            onRetry={tx.retry}
+            onDone={handleDone}
+            isPending={tx.isPending}
+            isSuccess={tx.isSuccess}
           />
-        ))}
-      </div>
-    </>
+        </motion.div>
+      )}
+
+      {flow.state.view === "amount-input" && (
+        <motion.div
+          key="amount-input"
+          custom={direction}
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={spring}
+        >
+          <WidgetHeader title="Enter Amount" onBack={handleBack} />
+          <AmountInput
+            market={flow.state.market}
+            defaultAmount={amount}
+            onConfirm={handleConfirmAmount}
+            onBack={handleBack}
+          />
+        </motion.div>
+      )}
+
+      {flow.state.view === "opportunities" && (
+        <motion.div
+          key="opportunities"
+          custom={direction}
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={spring}
+        >
+          <WidgetHeader
+            title={`${markets[0]?.token.symbol ?? ""} Lending Opportunities`}
+          />
+          <div style={listStyle}>
+            {(limit ? markets.slice(0, limit) : markets).map(
+              (market, i) => (
+                <motion.div
+                  key={market.platform.platformId}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ...spring, delay: i * 0.04 }}
+                >
+                  <MarketCard market={market} onSelect={handleSelectMarket} />
+                </motion.div>
+              ),
+            )}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </div>
   );
 };
 
@@ -213,6 +257,7 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     color: resolvedTheme.text,
+    overflow: "hidden",
   };
 
   const scrollStyle: CSSProperties = {
