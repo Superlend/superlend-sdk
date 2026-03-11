@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react"
-import { DEFAULT_NETWORK, DEFAULT_TOKEN, NETWORKS } from "@/config/tokens"
+import { DEFAULT_NETWORK, DEFAULT_TOKEN } from "@/config/tokens"
 import type { NetworkConfig, TokenConfig } from "@/config/tokens"
 
 type DemoConfigContextValue = {

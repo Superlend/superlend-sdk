@@ -92,11 +92,17 @@ export type SupplyCalldataRequest = {
   userAddress: string;
 };
 
-/** Raw transaction fields — pass directly to your wallet's `sendTransaction`. */
-export type SupplyCalldataResponse = {
+/** Raw transaction fields for a single on-chain call. */
+export type TransactionData = {
   to: string;
   data: string;
   value: string;
+};
+
+/** Raw transaction fields — pass directly to your wallet's `sendTransaction`. */
+export type SupplyCalldataResponse = TransactionData & {
+  /** If present, an ERC-20 `approve` transaction that must be sent and confirmed before the supply transaction. */
+  approval?: TransactionData;
 };
 
 export type HttpErrorCode =

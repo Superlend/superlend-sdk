@@ -57,6 +57,19 @@ export const NETWORKS: NetworkConfig[] = [
     ],
   },
   {
+    chainId: 42793,
+    name: "Etherlink",
+    tokens: [
+      { symbol: "USDC",  address: "0x796ea11fa2dd751ed01b53c372ffdb4aaa8f00f9", decimals: 6,  demoAmount: "10000000"    },
+      { symbol: "USDT",  address: "0x2c03058c8afc06713be23e58d2febc8337dbfe6a", decimals: 6,  demoAmount: "10000000"    },
+      { symbol: "WETH",  address: "0xfc24f770f94edbca6d6f885e12d4317320bcb401", decimals: 18, demoAmount: "5000000000000000"  },
+      { symbol: "WBTC",  address: "0xbfc94cd2b1e55999cfc7347a9313e88702b83d0f", decimals: 8,  demoAmount: "15000"       },
+      { symbol: "LBTC",  address: "0xecac9c5f704e954931349da37f60e39f515c11c1", decimals: 8,  demoAmount: "15000"       },
+      { symbol: "WXTZ",  address: "0xc9b53ab2679f573e480d01e0f49e2b5cfb7a3eab", decimals: 18, demoAmount: "28000000000000000000" },
+      { symbol: "stXTZ", address: "0x01f07f4d78d47a64f4c3b2b65f513f15be6e1854", decimals: 6,  demoAmount: "26000000"    },
+    ],
+  },
+  {
     chainId: 137,
     name: "Polygon",
     tokens: [

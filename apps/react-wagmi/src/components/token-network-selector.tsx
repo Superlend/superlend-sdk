@@ -1,45 +1,40 @@
 import { NETWORKS } from "@/config/tokens"
 import { useDemoConfig } from "@/context/demo-config"
-import { cn } from "@/lib/utils"
 
 export function TokenNetworkSelector() {
   const { network, token, setNetwork, setToken } = useDemoConfig()
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-1">
+    <div className="flex items-center gap-2">
+      <select
+        value={network.chainId}
+        onChange={(e) => {
+          const n = NETWORKS.find((n) => n.chainId === Number(e.target.value))
+          if (n) setNetwork(n)
+        }}
+        className="rounded-md border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground outline-none focus:ring-1 focus:ring-primary"
+      >
         {NETWORKS.map((n) => (
-          <button
-            key={n.chainId}
-            onClick={() => setNetwork(n)}
-            className={cn(
-              "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
-              n.chainId === network.chainId
-                ? "bg-primary text-primary-foreground"
-                : "border text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
-          >
+          <option key={n.chainId} value={n.chainId}>
             {n.name}
-          </button>
+          </option>
         ))}
-      </div>
+      </select>
 
-      <div className="flex flex-wrap gap-1">
+      <select
+        value={token.symbol}
+        onChange={(e) => {
+          const t = network.tokens.find((t) => t.symbol === e.target.value)
+          if (t) setToken(t)
+        }}
+        className="rounded-md border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground outline-none focus:ring-1 focus:ring-primary"
+      >
         {network.tokens.map((t) => (
-          <button
-            key={t.symbol}
-            onClick={() => setToken(t)}
-            className={cn(
-              "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
-              t.symbol === token.symbol
-                ? "bg-primary text-primary-foreground"
-                : "border text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
-          >
+          <option key={t.symbol} value={t.symbol}>
             {t.symbol}
-          </button>
+          </option>
         ))}
-      </div>
+      </select>
     </div>
   )
 }

@@ -76,10 +76,14 @@ export const tokenMarketsResponseSchema = z.object({
   total: z.number(),
 });
 
-export const supplyCalldataResponseSchema = z.object({
+const transactionDataSchema = z.object({
   to: z.string(),
   data: z.string(),
   value: z.string(),
+});
+
+export const supplyCalldataResponseSchema = transactionDataSchema.extend({
+  approval: transactionDataSchema.optional(),
 });
 
 export const apiResponseSchema = <T extends z.ZodType>(dataSchema: T) =>

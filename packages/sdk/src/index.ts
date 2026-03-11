@@ -10,6 +10,7 @@ export type {
   Market,
   TokenMarketsRequest,
   TokenMarketsResponse,
+  TransactionData,
   SupplyCalldataRequest,
   SupplyCalldataResponse,
   HttpErrorCode,

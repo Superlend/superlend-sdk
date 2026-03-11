@@ -2,16 +2,17 @@ import { SuperLendWidget, walletAdapters } from "@superlend/react";
 import type { WalletClient, WidgetVariant } from "@superlend/react";
 import type { Market, SupplyCalldataResponse } from "@superlend/sdk";
 import { useMemo, useState } from "react";
-import { useAccount, useWalletClient } from "wagmi";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { useWidgetTheme } from "@/context/widget-theme";
 import { useDemoConfig } from "@/context/demo-config";
 import { TokenNetworkSelector } from "@/components/token-network-selector";
 
 function useSuperlendWalletClient(): WalletClient | undefined {
   const { data: wagmiWalletClient } = useWalletClient();
+  const publicClient = usePublicClient();
   return useMemo(
-    () => (wagmiWalletClient ? walletAdapters.fromViem(wagmiWalletClient) : undefined),
-    [wagmiWalletClient],
+    () => (wagmiWalletClient ? walletAdapters.fromViem(wagmiWalletClient, publicClient) : undefined),
+    [wagmiWalletClient, publicClient],
   );
 }
 
