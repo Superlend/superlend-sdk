@@ -1,26 +1,18 @@
-import { SuperLendWidget } from "@superlend/react";
+import { SuperLendWidget, walletAdapters } from "@superlend/react";
 import type { WalletClient, WidgetVariant } from "@superlend/react";
 import type { Market, SupplyCalldataResponse } from "@superlend/sdk";
 import { useMemo, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
+import { useWidgetTheme } from "@/context/widget-theme";
+import { useDemoConfig } from "@/context/demo-config";
+import { TokenNetworkSelector } from "@/components/token-network-selector";
 
 function useSuperlendWalletClient(): WalletClient | undefined {
   const { data: wagmiWalletClient } = useWalletClient();
-
-  return useMemo(() => {
-    if (!wagmiWalletClient) return undefined;
-    return {
-      sendTransaction: async ({ to, data, value }) => {
-        const hash = await wagmiWalletClient.sendTransaction({
-          to: to as `0x${string}`,
-          data: data as `0x${string}`,
-          value: BigInt(value),
-          chain: wagmiWalletClient.chain,
-        });
-        return hash;
-      },
-    };
-  }, [wagmiWalletClient]);
+  return useMemo(
+    () => (wagmiWalletClient ? walletAdapters.fromViem(wagmiWalletClient) : undefined),
+    [wagmiWalletClient],
+  );
 }
 
 type WidgetDemoProps = {
@@ -31,6 +23,8 @@ type WidgetDemoProps = {
 export function WidgetDemo({ variant, useCallback }: WidgetDemoProps) {
   const { address } = useAccount();
   const walletClient = useSuperlendWalletClient();
+  const { theme } = useWidgetTheme();
+  const { network, token } = useDemoConfig();
   const [lastAction, setLastAction] = useState<{
     market: Market;
     calldata: SupplyCalldataResponse;
@@ -45,16 +39,26 @@ export function WidgetDemo({ variant, useCallback }: WidgetDemoProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      <TokenNetworkSelector />
+      <div>
+        <p className="text-sm font-medium" style={{ color: theme.text }}>
+          Successfully swapped 10 {token.symbol}
+        </p>
+        <p className="text-xs" style={{ color: `${theme.text}99` }}>
+          Let's put them to good use
+        </p>
+      </div>
       <SuperLendWidget
         apiKey="test_key"
-        tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-        amount="10000000"
-        chainId={1}
+        tokenAddress={token.address}
+        amount={token.demoAmount}
+        chainId={network.chainId}
         userAddress={address}
         variant={variant}
         baseUrl=""
         walletClient={useCallback ? undefined : walletClient}
         onAction={handleAction}
+        theme={theme}
       />
       {lastAction && (
         <div className="rounded-md border bg-muted p-3">

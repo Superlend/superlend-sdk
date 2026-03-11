@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DialogRouteImport } from './routes/dialog'
 import { Route as CompactRouteImport } from './routes/compact'
-import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as IndexRouteImport } from './routes/index'
 
 const DialogRoute = DialogRouteImport.update({
@@ -24,11 +23,6 @@ const CompactRoute = CompactRouteImport.update({
   path: '/compact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CallbackRoute = CallbackRouteImport.update({
-  id: '/callback',
-  path: '/callback',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,34 +31,30 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/callback': typeof CallbackRoute
   '/compact': typeof CompactRoute
   '/dialog': typeof DialogRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/callback': typeof CallbackRoute
   '/compact': typeof CompactRoute
   '/dialog': typeof DialogRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/callback': typeof CallbackRoute
   '/compact': typeof CompactRoute
   '/dialog': typeof DialogRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/callback' | '/compact' | '/dialog'
+  fullPaths: '/' | '/compact' | '/dialog'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/callback' | '/compact' | '/dialog'
-  id: '__root__' | '/' | '/callback' | '/compact' | '/dialog'
+  to: '/' | '/compact' | '/dialog'
+  id: '__root__' | '/' | '/compact' | '/dialog'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CallbackRoute: typeof CallbackRoute
   CompactRoute: typeof CompactRoute
   DialogRoute: typeof DialogRoute
 }
@@ -85,13 +75,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/callback': {
-      id: '/callback'
-      path: '/callback'
-      fullPath: '/callback'
-      preLoaderRoute: typeof CallbackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -104,7 +87,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CallbackRoute: CallbackRoute,
   CompactRoute: CompactRoute,
   DialogRoute: DialogRoute,
 }

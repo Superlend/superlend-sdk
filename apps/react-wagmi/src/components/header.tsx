@@ -6,7 +6,6 @@ const navItems = [
   { to: "/", label: "Inline" },
   { to: "/compact", label: "Compact" },
   { to: "/dialog", label: "Dialog" },
-  { to: "/callback", label: "Callback" },
 ] as const
 
 export function Header() {
