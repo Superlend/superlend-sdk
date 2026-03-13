@@ -1,6 +1,5 @@
-import { ResultAsync, errAsync, okAsync } from "neverthrow";
+import { ResultAsync } from "neverthrow";
 import { FetchError, ofetch } from "ofetch";
-import type { ZodType } from "zod/v4";
 import type { HttpError, RequestOptions } from "../types";
 
 const DEFAULT_TIMEOUT = 10_000;
@@ -40,7 +39,6 @@ const mapFetchError = (error: unknown, timeout: number): HttpError => {
 
 export const request = <T>(
   url: string,
-  schema: ZodType<T>,
   options: RequestOptions = {},
 ): ResultAsync<T, HttpError> => {
   const {
@@ -52,16 +50,7 @@ export const request = <T>(
   } = options;
 
   return ResultAsync.fromPromise(
-    ofetch(url, { method, body, headers, timeout, retry: retries }),
+    ofetch<T>(url, { method, body, headers, timeout, retry: retries }),
     (error) => mapFetchError(error, timeout),
-  ).andThen((data) => {
-    const parsed = schema.safeParse(data);
-    if (!parsed.success) {
-      return errAsync<T, HttpError>({
-        code: "VALIDATION_ERROR",
-        message: `Response validation failed: ${parsed.error.message}`,
-      });
-    }
-    return okAsync<T, HttpError>(parsed.data);
-  });
+  );
 };

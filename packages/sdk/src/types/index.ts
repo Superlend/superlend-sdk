@@ -3,8 +3,8 @@ export type TokenInfo = {
   name: string;
   symbol: string;
   decimals: number;
-  logo: string;
-  priceUsd: number;
+  logo: string | null;
+  priceUsd: number | null;
 };
 
 export type CuratorInfo = {
@@ -109,8 +109,7 @@ export type HttpErrorCode =
   | "NETWORK_ERROR"
   | "TIMEOUT"
   | "ABORT"
-  | "API_ERROR"
-  | "VALIDATION_ERROR";
+  | "API_ERROR";
 
 /** Typed error returned by all `SuperLendClient` methods. Never thrown — always in the `Err` branch. */
 export type HttpError = {

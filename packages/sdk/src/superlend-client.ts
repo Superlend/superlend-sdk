@@ -1,12 +1,8 @@
 import type { ResultAsync } from "neverthrow";
 import { request } from "./lib/request.utils";
-import {
-  apiResponseSchema,
-  supplyCalldataResponseSchema,
-  tokenMarketsResponseSchema,
-} from "./schemas/api.schemas";
 import { SDK_DEFAULT_BASE_URL } from "./sdk.constants";
 import type {
+  ApiResponse,
   ClientConfig,
   HttpError,
   SupplyCalldataRequest,
@@ -60,9 +56,8 @@ export class SuperLendClient {
   getTokenMarkets(
     params: TokenMarketsRequest,
   ): ResultAsync<TokenMarketsResponse, HttpError> {
-    return request(
+    return request<ApiResponse<TokenMarketsResponse>>(
       `${this.baseUrl}/sdk/markets/token`,
-      apiResponseSchema(tokenMarketsResponseSchema),
       {
         method: "POST",
         body: params as unknown as Record<string, unknown>,
@@ -80,9 +75,8 @@ export class SuperLendClient {
   buildSupplyCalldata(
     params: SupplyCalldataRequest,
   ): ResultAsync<SupplyCalldataResponse, HttpError> {
-    return request(
+    return request<ApiResponse<SupplyCalldataResponse>>(
       `${this.baseUrl}/sdk/action/supply`,
-      apiResponseSchema(supplyCalldataResponseSchema),
       {
         method: "POST",
         body: params as unknown as Record<string, unknown>,
