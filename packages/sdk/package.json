@@ -1,6 +1,16 @@
 {
   "name": "@superlend/sdk",
   "version": "0.1.0",
+  "description": "TypeScript client for the SuperLend API",
+  "license": "MIT",
+  "author": "SuperLend",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superlend/superlend-sdk",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://github.com/superlend/superlend-sdk/tree/main/packages/sdk",
+  "keywords": ["superlend", "defi", "lending", "sdk"],
   "type": "module",
   "exports": {
     ".": {

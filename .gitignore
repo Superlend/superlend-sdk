@@ -12,3 +12,4 @@ docs/reference
 .env
 .env.local
 .env.*.local
+CLAUDE.md
