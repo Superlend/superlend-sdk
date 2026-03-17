@@ -146,7 +146,7 @@ function fromEthers(
             to: tokenAddress,
             data: calldata,
           });
-          return BigInt(result);
+          return BigInt(result ?? 0);
         }
       : undefined,
   };
