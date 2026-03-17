@@ -14,6 +14,8 @@ type AmountInputProps = {
   defaultAmount: string;
   onConfirm: (rawAmount: string) => void;
   onBack: () => void;
+  needsWallet?: boolean;
+  onConnectWallet?: () => void;
 };
 
 function rawToHuman(raw: string, decimals: number): string {
@@ -37,7 +39,9 @@ const AmountInput: React.FC<AmountInputProps> = ({
   market,
   defaultAmount,
   onConfirm,
-  onBack,
+  onBack: _onBack,
+  needsWallet,
+  onConnectWallet,
 }) => {
   const theme = useTheme();
   const decimals = market.token.decimals;
@@ -56,7 +60,11 @@ const AmountInput: React.FC<AmountInputProps> = ({
     onConfirm(raw);
   };
 
-  const isValid = value !== "" && value !== "0" && value !== "0." && /^\d*\.?\d*$/.test(value);
+  const isValid =
+    value !== "" &&
+    value !== "0" &&
+    value !== "0." &&
+    /^\d*\.?\d*$/.test(value);
 
   const containerStyle: CSSProperties = {
     display: "flex",
@@ -112,7 +120,6 @@ const AmountInput: React.FC<AmountInputProps> = ({
           value={value}
           onChange={handleChange}
           placeholder="0.00"
-          autoFocus
         />
         <span style={symbolStyle}>{market.token.symbol}</span>
       </motion.div>
@@ -122,9 +129,11 @@ const AmountInput: React.FC<AmountInputProps> = ({
         transition={{ ...spring, delay: 0.08 }}
       >
         <ActionButton
-          label="Continue"
-          onClick={handleConfirm}
-          disabled={!isValid}
+          label={needsWallet ? "Connect Wallet" : "Continue"}
+          onClick={
+            needsWallet && onConnectWallet ? onConnectWallet : handleConfirm
+          }
+          disabled={needsWallet ? !onConnectWallet : !isValid}
         />
       </motion.div>
     </div>

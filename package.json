@@ -16,7 +16,7 @@
     "changeset:publish": "changeset publish"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.4.7",
     "@changesets/cli": "^2.29.6",
     "typescript": "^5.9.2"
   }

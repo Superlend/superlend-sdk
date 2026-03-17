@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { SuperLendWidget } from "../components/superlend-widget";
@@ -27,9 +27,7 @@ function createQueryClient() {
   });
 }
 
-function renderWidget(
-  props?: Partial<Parameters<typeof SuperLendWidget>[0]>,
-) {
+function renderWidget(props?: Partial<Parameters<typeof SuperLendWidget>[0]>) {
   const queryClient = createQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
@@ -69,9 +67,7 @@ describe("SuperLendWidget", () => {
     renderWidget();
 
     await waitFor(() => {
-      expect(
-        screen.getByText("Steakhouse Reservoir USDC"),
-      ).toBeTruthy();
+      expect(screen.getByText("Steakhouse Reservoir USDC")).toBeTruthy();
     });
 
     expect(screen.getByText("Steakhouse USDC")).toBeTruthy();
@@ -88,9 +84,7 @@ describe("SuperLendWidget", () => {
     renderWidget();
 
     await waitFor(() => {
-      expect(
-        screen.getByText("Failed to load opportunities"),
-      ).toBeTruthy();
+      expect(screen.getByText("Failed to load opportunities")).toBeTruthy();
     });
   });
 
@@ -104,9 +98,7 @@ describe("SuperLendWidget", () => {
     renderWidget();
 
     await waitFor(() => {
-      expect(
-        screen.getByText("USDC Lending Opportunities"),
-      ).toBeTruthy();
+      expect(screen.getByText("USDC Lending Opportunities")).toBeTruthy();
     });
   });
 
@@ -138,9 +130,7 @@ describe("SuperLendWidget", () => {
     renderWidget();
 
     await waitFor(() => {
-      expect(
-        screen.getByText("No opportunities available"),
-      ).toBeTruthy();
+      expect(screen.getByText("No opportunities available")).toBeTruthy();
     });
   });
 });

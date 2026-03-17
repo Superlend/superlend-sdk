@@ -1,10 +1,10 @@
-import { SuperLendClient } from "@superlend/sdk";
 import type { Market } from "@superlend/sdk";
+import { SuperLendClient } from "@superlend/sdk";
 import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useRef } from "react";
-import { ThemeContext, resolveTheme } from "../context/theme.context";
+import { resolveTheme, ThemeContext } from "../context/theme.context";
 import { useMarkets } from "../hooks/opportunities.hooks";
 import { useTransaction } from "../hooks/transaction.hooks";
 import { useWidgetFlow } from "../hooks/widget-flow.hooks";
@@ -29,6 +29,7 @@ type WidgetContentProps = {
   limit?: number;
   walletClient?: WidgetProps["walletClient"];
   onAction?: WidgetProps["onAction"];
+  onConnectWallet?: WidgetProps["onConnectWallet"];
 };
 
 const WidgetContent: React.FC<WidgetContentProps> = ({
@@ -40,6 +41,7 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
   limit,
   walletClient,
   onAction,
+  onConnectWallet,
 }) => {
   const { data, isLoading, error } = useMarkets(client, {
     tokenAddress,
@@ -51,8 +53,12 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
 
   const prevViewRef = useRef(flow.state.view);
   const viewOrder = ["opportunities", "amount-input", "transaction"] as const;
-  const prevIdx = viewOrder.indexOf(prevViewRef.current as typeof viewOrder[number]);
-  const currIdx = viewOrder.indexOf(flow.state.view as typeof viewOrder[number]);
+  const prevIdx = viewOrder.indexOf(
+    prevViewRef.current as (typeof viewOrder)[number],
+  );
+  const currIdx = viewOrder.indexOf(
+    flow.state.view as (typeof viewOrder)[number],
+  );
   const direction = currIdx >= prevIdx ? 1 : -1;
 
   useEffect(() => {
@@ -62,6 +68,8 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
   const handleSelectMarket = (market: Market) => {
     flow.selectMarket(market);
   };
+
+  const needsWallet = !walletClient && !onAction;
 
   const handleConfirmAmount = async (rawAmount: string) => {
     if (!flow.state.view || flow.state.view !== "amount-input") return;
@@ -81,6 +89,8 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
       flow.reset();
       return;
     }
+
+    if (!walletClient) return;
 
     flow.confirmAmount(rawAmount);
     tx.execute({
@@ -140,67 +150,68 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
 
   return (
     <div style={{ overflow: "hidden" }}>
-    <AnimatePresence mode="wait" custom={direction}>
-      {flow.state.view === "transaction" && (
-        <motion.div
-          key="transaction"
-          custom={direction}
-          variants={slideVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={spring}
-        >
-          <WidgetHeader title="Transaction" />
-          <TransactionFlow
-            market={flow.state.market}
-            amount={flow.state.amount}
-            steps={tx.steps}
-            onRetry={tx.retry}
-            onDone={handleDone}
-            onStartOver={handleDone}
-            isPending={tx.isPending}
-            isSuccess={tx.isSuccess}
-          />
-        </motion.div>
-      )}
+      <AnimatePresence mode="wait" custom={direction}>
+        {flow.state.view === "transaction" && (
+          <motion.div
+            key="transaction"
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={spring}
+          >
+            <WidgetHeader title="Transaction" />
+            <TransactionFlow
+              market={flow.state.market}
+              amount={flow.state.amount}
+              steps={tx.steps}
+              onRetry={tx.retry}
+              onDone={handleDone}
+              onStartOver={handleDone}
+              isPending={tx.isPending}
+              isSuccess={tx.isSuccess}
+            />
+          </motion.div>
+        )}
 
-      {flow.state.view === "amount-input" && (
-        <motion.div
-          key="amount-input"
-          custom={direction}
-          variants={slideVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={spring}
-        >
-          <WidgetHeader title="Enter Amount" onBack={handleBack} />
-          <AmountInput
-            market={flow.state.market}
-            defaultAmount={amount}
-            onConfirm={handleConfirmAmount}
-            onBack={handleBack}
-          />
-        </motion.div>
-      )}
+        {flow.state.view === "amount-input" && (
+          <motion.div
+            key="amount-input"
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={spring}
+          >
+            <WidgetHeader title="Enter Amount" onBack={handleBack} />
+            <AmountInput
+              market={flow.state.market}
+              defaultAmount={amount}
+              onConfirm={handleConfirmAmount}
+              onBack={handleBack}
+              needsWallet={needsWallet}
+              onConnectWallet={onConnectWallet}
+            />
+          </motion.div>
+        )}
 
-      {flow.state.view === "opportunities" && (
-        <motion.div
-          key="opportunities"
-          custom={direction}
-          variants={slideVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={spring}
-        >
-          <WidgetHeader
-            title={`${markets[0]?.token.symbol ?? ""} Lending Opportunities`}
-          />
-          <div style={listStyle}>
-            {(limit ? markets.slice(0, limit) : markets).map(
-              (market, i) => (
+        {flow.state.view === "opportunities" && (
+          <motion.div
+            key="opportunities"
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={spring}
+          >
+            <WidgetHeader
+              title={`${markets[0]?.token.symbol ?? ""} Lending Opportunities`}
+            />
+            <div style={listStyle}>
+              {(limit ? markets.slice(0, limit) : markets).map((market, i) => (
                 <motion.div
                   key={market.platform.platformId}
                   initial={{ opacity: 0, y: 12 }}
@@ -209,12 +220,11 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
                 >
                   <MarketCard market={market} onSelect={handleSelectMarket} />
                 </motion.div>
-              ),
-            )}
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -229,6 +239,7 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
   theme: themeOverrides,
   walletClient,
   onAction,
+  onConnectWallet,
   partnerId,
   limit,
   baseUrl,
@@ -281,6 +292,7 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
       limit={limit}
       walletClient={walletClient}
       onAction={onAction}
+      onConnectWallet={onConnectWallet}
     />
   );
 

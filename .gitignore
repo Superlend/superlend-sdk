@@ -9,3 +9,6 @@ test-results
 storybook-static
 docs/reference
 .DS_Store
+.env
+.env.local
+.env.*.local

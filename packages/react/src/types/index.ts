@@ -44,6 +44,12 @@ export type WidgetProps = {
    * Mutually exclusive with `walletClient`.
    */
   onAction?: (market: Market, calldata: SupplyCalldataResponse) => void;
+  /**
+   * Callback invoked when the user tries to proceed without a connected wallet.
+   * Use this to trigger your app's wallet connection flow.
+   * The button label changes to "Connect Wallet" when neither `walletClient` nor `onAction` is provided.
+   */
+  onConnectWallet?: () => void;
   partnerId?: string;
   /** Maximum number of market opportunities to display. */
   limit?: number;

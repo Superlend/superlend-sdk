@@ -27,7 +27,8 @@ const WidgetDialog: React.FC<WidgetDialogProps> = ({ children, trigger }) => {
     background: theme.bg,
     paddingTop: "20px",
     zIndex: 9999,
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     color: theme.text,
   };
 
@@ -46,7 +47,7 @@ const WidgetDialog: React.FC<WidgetDialogProps> = ({ children, trigger }) => {
       <Dialog.Trigger
         render={
           trigger ? (
-            <>{trigger}</>
+            trigger
           ) : (
             <button
               type="button"

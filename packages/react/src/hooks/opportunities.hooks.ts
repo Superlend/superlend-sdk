@@ -24,4 +24,4 @@ const useMarkets = (client: SuperLendClient, params: UseMarketsParams) => {
   });
 };
 
-export { useMarkets, type UseMarketsParams };
+export { type UseMarketsParams, useMarkets };

@@ -1,7 +1,7 @@
 import type {
   Market,
-  SupplyCalldataResponse,
   SuperLendClient,
+  SupplyCalldataResponse,
 } from "@superlend/sdk";
 import { useCallback, useRef, useState } from "react";
 import type { WalletClient } from "../types";
@@ -39,10 +39,17 @@ function friendlyError(e: unknown, fallback: string): string {
   const raw = e instanceof Error ? e.message : String(e);
   const lower = raw.toLowerCase();
 
-  if (lower.includes("user rejected") || lower.includes("user denied") || lower.includes("rejected the request")) {
+  if (
+    lower.includes("user rejected") ||
+    lower.includes("user denied") ||
+    lower.includes("rejected the request")
+  ) {
     return "Transaction rejected";
   }
-  if (lower.includes("insufficient funds") || lower.includes("insufficient balance")) {
+  if (
+    lower.includes("insufficient funds") ||
+    lower.includes("insufficient balance")
+  ) {
     return "Insufficient funds";
   }
   if (lower.includes("nonce")) {
@@ -67,10 +74,7 @@ const initialSteps: TransactionSteps = {
   supply: { status: "idle", needed: true },
 };
 
-const useTransaction = ({
-  client,
-  walletClient,
-}: UseTransactionOptions) => {
+const useTransaction = ({ client, walletClient }: UseTransactionOptions) => {
   const [steps, setSteps] = useState<TransactionSteps>(initialSteps);
   const [isPending, setIsPending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -81,15 +85,15 @@ const useTransaction = ({
   // Track which steps already succeeded for retry
   const completedStepsRef = useRef<Set<string>>(new Set());
 
-  const updateStep = (
-    step: keyof TransactionSteps,
-    update: Partial<StepState>,
-  ) => {
-    setSteps((prev) => ({
-      ...prev,
-      [step]: { ...prev[step], ...update },
-    }));
-  };
+  const updateStep = useCallback(
+    (step: keyof TransactionSteps, update: Partial<StepState>) => {
+      setSteps((prev) => ({
+        ...prev,
+        [step]: { ...prev[step], ...update },
+      }));
+    },
+    [],
+  );
 
   const execute = useCallback(
     async (params: ExecuteParams) => {
@@ -106,7 +110,11 @@ const useTransaction = ({
 
       setSteps({
         switchChain: {
-          status: completedStepsRef.current.has("switchChain") ? "success" : needsChainSwitch ? "idle" : "idle",
+          status: completedStepsRef.current.has("switchChain")
+            ? "success"
+            : needsChainSwitch
+              ? "idle"
+              : "idle",
           needed: needsChainSwitch,
         },
         approval: { status: "idle", needed: false }, // determined after calldata
@@ -118,7 +126,7 @@ const useTransaction = ({
         if (needsChainSwitch && !completedStepsRef.current.has("switchChain")) {
           updateStep("switchChain", { status: "pending" });
           try {
-            await walletClient!.switchChain!(params.market.chainId);
+            await walletClient?.switchChain?.(params.market.chainId);
             updateStep("switchChain", { status: "success" });
             completedStepsRef.current.add("switchChain");
           } catch (e) {
@@ -128,7 +136,10 @@ const useTransaction = ({
             setIsPending(false);
             return;
           }
-        } else if (needsChainSwitch && completedStepsRef.current.has("switchChain")) {
+        } else if (
+          needsChainSwitch &&
+          completedStepsRef.current.has("switchChain")
+        ) {
           updateStep("switchChain", { status: "success" });
         }
 
@@ -149,7 +160,7 @@ const useTransaction = ({
 
         // Step 2: Approval if needed
         const needsApproval = await resolveApprovalNeeded({
-          walletClient: walletClient!,
+          walletClient: walletClient as NonNullable<typeof walletClient>,
           calldata,
           tokenAddress: params.market.token.address,
           userAddress: params.userAddress,
@@ -160,7 +171,9 @@ const useTransaction = ({
         setSteps((prev) => ({
           ...prev,
           approval: {
-            status: completedStepsRef.current.has("approval") ? "success" : "idle",
+            status: completedStepsRef.current.has("approval")
+              ? "success"
+              : "idle",
             needed: needsApproval,
           },
         }));
@@ -170,9 +183,13 @@ const useTransaction = ({
           try {
             const approvalData =
               calldata.approval ??
-              encodeApproveCalldata(params.market.token.address, calldata.to, params.amount);
+              encodeApproveCalldata(
+                params.market.token.address,
+                calldata.to,
+                params.amount,
+              );
 
-            await walletClient!.sendTransaction({
+            await walletClient?.sendTransaction({
               to: approvalData.to,
               data: approvalData.data,
               value: approvalData.value,
@@ -193,7 +210,7 @@ const useTransaction = ({
         if (!completedStepsRef.current.has("supply")) {
           updateStep("supply", { status: "pending" });
           try {
-            await walletClient!.sendTransaction({
+            await walletClient?.sendTransaction({
               to: calldata.to,
               data: calldata.data,
               value: calldata.value,
@@ -218,7 +235,7 @@ const useTransaction = ({
         setIsPending(false);
       }
     },
-    [client, walletClient],
+    [client, walletClient, updateStep],
   );
 
   const retry = useCallback(() => {
@@ -274,10 +291,10 @@ async function resolveApprovalNeeded(params: {
 }
 
 export {
-  useTransaction,
   type ExecuteParams,
-  type UseTransactionOptions,
-  type TransactionSteps,
-  type StepStatus,
   type StepState,
+  type StepStatus,
+  type TransactionSteps,
+  type UseTransactionOptions,
+  useTransaction,
 };

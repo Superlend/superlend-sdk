@@ -105,11 +105,7 @@ export type SupplyCalldataResponse = TransactionData & {
   approval?: TransactionData;
 };
 
-export type HttpErrorCode =
-  | "NETWORK_ERROR"
-  | "TIMEOUT"
-  | "ABORT"
-  | "API_ERROR";
+export type HttpErrorCode = "NETWORK_ERROR" | "TIMEOUT" | "ABORT" | "API_ERROR";
 
 /** Typed error returned by all `SuperLendClient` methods. Never thrown — always in the `Err` branch. */
 export type HttpError = {

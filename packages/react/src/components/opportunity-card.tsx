@@ -89,9 +89,7 @@ const MarketCard: React.FC<MarketCardProps> = ({ market, onSelect }) => {
         </div>
       </div>
       <div style={rightStyle}>
-        <div style={apyStyle}>
-          {market.supplyRate.current.net.toFixed(2)}%
-        </div>
+        <div style={apyStyle}>{market.supplyRate.current.net.toFixed(2)}%</div>
         <div style={apyLabelStyle}>Supply APY</div>
       </div>
     </button>

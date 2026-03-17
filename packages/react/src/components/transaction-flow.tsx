@@ -45,7 +45,14 @@ type StepRowProps = {
   index: number;
 };
 
-const StepRow: React.FC<StepRowProps> = ({ label, status, error, onRetry, onStartOver, index }) => {
+const StepRow: React.FC<StepRowProps> = ({
+  label,
+  status,
+  error,
+  onRetry,
+  onStartOver,
+  index,
+}) => {
   const theme = useTheme();
 
   const rowStyle: CSSProperties = {
@@ -144,8 +151,12 @@ const StepRow: React.FC<StepRowProps> = ({ label, status, error, onRetry, onStar
               exit={{ opacity: 0 }}
               transition={spring}
             >
-              <button type="button" style={retryStyle} onClick={onRetry}>Retry</button>
-              <button type="button" style={retryStyle} onClick={onStartOver}>Start Over</button>
+              <button type="button" style={retryStyle} onClick={onRetry}>
+                Retry
+              </button>
+              <button type="button" style={retryStyle} onClick={onStartOver}>
+                Start Over
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -161,7 +172,7 @@ const TransactionFlow: React.FC<TransactionFlowProps> = ({
   onRetry,
   onDone,
   onStartOver,
-  isPending,
+  isPending: _isPending,
   isSuccess,
 }) => {
   const theme = useTheme();

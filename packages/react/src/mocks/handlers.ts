@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 
 const BASE_URL = "https://sdk-api.superlend.xyz";
 

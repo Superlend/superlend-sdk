@@ -1,17 +1,21 @@
-import { SuperLendWidget, walletAdapters } from "@superlend/react";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import type { WalletClient, WidgetVariant } from "@superlend/react";
+import { SuperLendWidget, walletAdapters } from "@superlend/react";
 import type { Market, SupplyCalldataResponse } from "@superlend/sdk";
 import { useMemo, useState } from "react";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { useWidgetTheme } from "@/context/widget-theme";
-import { useDemoConfig } from "@/context/demo-config";
 import { TokenNetworkSelector } from "@/components/token-network-selector";
+import { useDemoConfig } from "@/context/demo-config";
+import { useWidgetTheme } from "@/context/widget-theme";
 
 function useSuperlendWalletClient(): WalletClient | undefined {
   const { data: wagmiWalletClient } = useWalletClient();
   const publicClient = usePublicClient();
   return useMemo(
-    () => (wagmiWalletClient ? walletAdapters.fromViem(wagmiWalletClient, publicClient) : undefined),
+    () =>
+      wagmiWalletClient
+        ? walletAdapters.fromViem(wagmiWalletClient, publicClient)
+        : undefined,
     [wagmiWalletClient, publicClient],
   );
 }
@@ -21,8 +25,9 @@ type WidgetDemoProps = {
   useCallback?: boolean;
 };
 
-export function WidgetDemo({ variant, useCallback }: WidgetDemoProps) {
+export function WagmiWidgetDemo({ variant, useCallback }: WidgetDemoProps) {
   const { address } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const walletClient = useSuperlendWalletClient();
   const { theme } = useWidgetTheme();
   const { network, token } = useDemoConfig();
@@ -50,15 +55,16 @@ export function WidgetDemo({ variant, useCallback }: WidgetDemoProps) {
         </p>
       </div>
       <SuperLendWidget
-        apiKey="test_key"
+        apiKey={import.meta.env.VITE_SUPERLEND_API_KEY || ""}
         tokenAddress={token.address}
         amount={token.demoAmount}
         chainId={network.chainId}
         userAddress={address}
         variant={variant}
-        baseUrl={import.meta.env.VITE_SUPERLEND_API_URL ?? ""}
+        baseUrl={import.meta.env.VITE_SUPERLEND_API_URL || undefined}
         walletClient={useCallback ? undefined : walletClient}
         onAction={handleAction}
+        onConnectWallet={openConnectModal}
         theme={theme}
       />
       {lastAction && (

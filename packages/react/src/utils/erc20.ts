@@ -28,6 +28,7 @@ export function encodeApproveCalldata(
   spenderAddress: string,
   amount: string,
 ): { to: string; data: string; value: string } {
-  const data = APPROVE_SELECTOR + padAddress(spenderAddress) + padUint256(amount);
+  const data =
+    APPROVE_SELECTOR + padAddress(spenderAddress) + padUint256(amount);
   return { to: tokenAddress, data, value: "0" };
 }

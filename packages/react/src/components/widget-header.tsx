@@ -46,7 +46,12 @@ const WidgetHeader: React.FC<WidgetHeaderProps> = ({ title, onBack }) => {
   return (
     <div style={containerStyle}>
       {onBack && (
-        <button type="button" style={backStyle} onClick={onBack} aria-label="Go back">
+        <button
+          type="button"
+          style={backStyle}
+          onClick={onBack}
+          aria-label="Go back"
+        >
           ←
         </button>
       )}

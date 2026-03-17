@@ -22,7 +22,11 @@ function widgetReducer(
       return { view: "amount-input", market: action.market };
     case "CONFIRM_AMOUNT":
       if (state.view === "amount-input") {
-        return { view: "transaction", market: state.market, amount: action.amount };
+        return {
+          view: "transaction",
+          market: state.market,
+          amount: action.amount,
+        };
       }
       return state;
     case "BACK":
@@ -53,4 +57,9 @@ const useWidgetFlow = () => {
   };
 };
 
-export { useWidgetFlow, widgetReducer, type WidgetFlowState, type WidgetFlowAction };
+export {
+  useWidgetFlow,
+  type WidgetFlowAction,
+  type WidgetFlowState,
+  widgetReducer,
+};

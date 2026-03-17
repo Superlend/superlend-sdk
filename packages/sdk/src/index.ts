@@ -1,19 +1,19 @@
 export { SuperLendClient } from "./superlend-client";
 
 export type {
-  TokenInfo,
+  ClientConfig,
   CuratorInfo,
+  HttpError,
+  HttpErrorCode,
+  Market,
   PlatformInfo,
-  RewardBreakdown,
   RateCurrent,
   RateInfo,
-  Market,
+  RewardBreakdown,
+  SupplyCalldataRequest,
+  SupplyCalldataResponse,
+  TokenInfo,
   TokenMarketsRequest,
   TokenMarketsResponse,
   TransactionData,
-  SupplyCalldataRequest,
-  SupplyCalldataResponse,
-  HttpErrorCode,
-  HttpError,
-  ClientConfig,
 } from "./types";
