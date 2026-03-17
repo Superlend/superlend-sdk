@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://app.superlend.xyz/images/superlend-logo.webp" alt="SuperLend" width="200" />
+</p>
+
 # SuperLend SDK
 
 Embed lending opportunities into your app. After a user swaps tokens, show them the best supply rates across DeFi protocols.
