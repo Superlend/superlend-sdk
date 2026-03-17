@@ -2,7 +2,7 @@
 
 Monorepo containing:
 - `@superlend/sdk` (headless client)
-- `@superlend/react` (post-swap widget)
+- `@superlend/react-sdk` (post-swap widget)
 - `apps/nextjs-example` integration demo
 ## Commands
 

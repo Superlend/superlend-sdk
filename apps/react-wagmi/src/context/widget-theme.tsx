@@ -1,4 +1,4 @@
-import type { ThemeConfig } from "@superlend/react";
+import type { ThemeConfig } from "@superlend/react-sdk";
 import { createContext, useContext, useState } from "react";
 
 type WidgetThemeContextValue = {

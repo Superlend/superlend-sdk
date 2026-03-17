@@ -1,4 +1,4 @@
-import type { ThemeConfig } from "@superlend/react";
+import type { ThemeConfig } from "@superlend/react-sdk";
 import { useState } from "react";
 import { useWidgetTheme } from "@/context/widget-theme";
 import { cn } from "@/lib/utils";

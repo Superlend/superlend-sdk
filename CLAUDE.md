@@ -21,7 +21,7 @@ powered by SuperLend
 
 ```
 Third-party App (Bungee, etc.)
-  └── @superlend/react (UI widget, client-only)
+  └── @superlend/react-sdk (UI widget, client-only)
         └── @superlend/sdk (headless client)
               └── sdk-microservice (BE, encodes calldata, tracks analytics)
 ```
@@ -32,7 +32,7 @@ Third-party App (Bungee, etc.)
 superlend-sdk/                  # Open source
 ├── packages/
 │   ├── sdk/                    # @superlend/sdk — headless, framework-agnostic
-│   └── react/                  # @superlend/react — UI components
+│   └── react/                  # @superlend/react-sdk — UI components
 ├── apps/
 │   ├── nextjs-example/         # Integration demo
 │   └── storybook/              # Component playground (internal dev tool)
@@ -56,7 +56,7 @@ superlend-sdk-docs/             # Private, separate repo
 - Returns raw calldata strings — integrator uses their own web3 stack to execute
 - FE SDK version is decoupled from BE microservice version
 
-### @superlend/react
+### @superlend/react-sdk
 
 - Client-only — no SSR support needed (post-tx hook context)
 - UI components built on Base UI (from Radix/MUI team) for accessibility
@@ -93,7 +93,7 @@ SuperLendWidget (entry point, variant switching)
   - neverthrow           # Result types for explicit error handling
   - zod                  # Runtime validation of API responses and integrator input
 
-@superlend/react:
+@superlend/react-sdk:
   - @base-ui/react       # Unstyled accessible primitives (button, skeleton, dialog)
   - peer: react
   - peer (optional): viem, wagmi  # Only needed if using walletClient mode
@@ -112,7 +112,7 @@ devDeps (root):
 
 ## Tooling Decisions
 
-- **Web3**: viem (tree-shakeable, wagmi-native) — only as optional peer dep in @superlend/react. No web3 lib in @superlend/sdk.
+- **Web3**: viem (tree-shakeable, wagmi-native) — only as optional peer dep in @superlend/react-sdk. No web3 lib in @superlend/sdk.
 - **Linting + Formatting**: Biome — single tool, zero config headaches, fast.
 - **Bundler**: tsup — ESM + CJS dual output with dts generation.
 - **Monorepo**: Turborepo + pnpm workspaces.
@@ -138,7 +138,7 @@ devDeps (root):
 
 ## Analytics
 
-- NO client-side analytics SDK in the bundle — zero PostHog or similar in @superlend/sdk or @superlend/react
+- NO client-side analytics SDK in the bundle — zero PostHog or similar in @superlend/sdk or @superlend/react-sdk
 - Analytics tracked server-side via the microservice:
   - Impressions = getOpportunities() API calls
   - Conversions = getCalldata() API calls
@@ -175,7 +175,7 @@ GET  /v1/supported-tokens?chainId=
 One import. No CSS. No providers. Just works:
 
 ```tsx
-import { SuperLendWidget } from '@superlend/react';
+import { SuperLendWidget } from '@superlend/react-sdk';
 
 // Inline variant
 <SuperLendWidget

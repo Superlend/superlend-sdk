@@ -1,5 +1,5 @@
-import type { WalletClient, WidgetVariant } from "@superlend/react";
-import { SuperLendWidget, walletAdapters } from "@superlend/react";
+import type { WalletClient, WidgetVariant } from "@superlend/react-sdk";
+import { SuperLendWidget, walletAdapters } from "@superlend/react-sdk";
 import type { Market, SupplyCalldataResponse } from "@superlend/sdk";
 import { useMemo, useState } from "react";
 import { TokenNetworkSelector } from "@/components/token-network-selector";
