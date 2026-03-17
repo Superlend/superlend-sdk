@@ -15,10 +15,10 @@
 ## Warnings
 
 - [x] Add CLAUDE.md to `.gitignore`
-- [ ] Improve root README — install instructions, quickstart, badges
+- [x] Improve root README — install instructions, quickstart, badges
 - [x] Add `.env*` to `.gitignore` (already present)
-- [ ] Add GitHub Actions CI — test, lint, publish workflows
-- [ ] Add CONTRIBUTING.md
+- [x] Add GitHub Actions CI — test, lint, publish workflows
+- [x] ~~Add CONTRIBUTING.md~~ — skipped, closed open source
 
 ## Refactor
 
@@ -32,5 +32,5 @@
 
 ## Nice-to-haves
 
-- [ ] Add `.changesetrc.json` config
+- [x] Add `.changeset/config.json`
 - [ ] Expand test coverage (schema validation, accessibility, error edge cases)

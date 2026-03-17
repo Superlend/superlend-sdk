@@ -1,15 +1,44 @@
-# superlend-sdk
+# SuperLend SDK
 
-Monorepo containing:
-- `@superlend/sdk` (headless client)
-- `@superlend/react-sdk` (post-swap widget)
-- `apps/nextjs-example` integration demo
-## Commands
+Embed lending opportunities into your app. After a user swaps tokens, show them the best supply rates across DeFi protocols.
+
+## Packages
+
+| Package | Description |
+|---|---|
+| [`@superlend/sdk`](./packages/sdk) | TypeScript client — fetch markets, build supply calldata |
+| [`@superlend/react-sdk`](./packages/react) | React widget and headless hooks |
+
+## Quick Start
+
+```bash
+pnpm add @superlend/sdk @superlend/react-sdk
+```
+
+```tsx
+import { SuperLendWidget, walletAdapters } from '@superlend/react-sdk';
+
+<SuperLendWidget
+  apiKey="your_key"
+  tokenAddress="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+  amount="1000000"
+  chainId={8453}
+  walletClient={walletAdapters.fromViemWalletClient(viemClient)}
+/>
+```
+
+See individual package READMEs for full API docs.
+
+## Development
 
 ```bash
 pnpm install
-pnpm dev         # run all workspace dev scripts in parallel
-pnpm build       # build all workspaces
-pnpm test        # run tests across workspaces
-pnpm lint        # lint all workspaces
+pnpm dev
+pnpm build
+pnpm test
+pnpm lint
 ```
+
+## License
+
+[MIT](./LICENSE)
