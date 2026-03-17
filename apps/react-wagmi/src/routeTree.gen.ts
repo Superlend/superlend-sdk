@@ -8,193 +8,193 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as EthersDialogRouteImport } from "./routes/ethers/dialog";
-import { Route as EthersIndexRouteImport } from "./routes/ethers/index";
-import { Route as EthersRouteRouteImport } from "./routes/ethers/route";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as WagmiDialogRouteImport } from "./routes/wagmi/dialog";
-import { Route as WagmiIndexRouteImport } from "./routes/wagmi/index";
-import { Route as WagmiRouteRouteImport } from "./routes/wagmi/route";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as WagmiRouteRouteImport } from './routes/wagmi/route'
+import { Route as EthersRouteRouteImport } from './routes/ethers/route'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as WagmiIndexRouteImport } from './routes/wagmi/index'
+import { Route as EthersIndexRouteImport } from './routes/ethers/index'
+import { Route as WagmiDialogRouteImport } from './routes/wagmi/dialog'
+import { Route as EthersDialogRouteImport } from './routes/ethers/dialog'
 
 const WagmiRouteRoute = WagmiRouteRouteImport.update({
-  id: "/wagmi",
-  path: "/wagmi",
+  id: '/wagmi',
+  path: '/wagmi',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const EthersRouteRoute = EthersRouteRouteImport.update({
-  id: "/ethers",
-  path: "/ethers",
+  id: '/ethers',
+  path: '/ethers',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const WagmiIndexRoute = WagmiIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => WagmiRouteRoute,
-} as any);
+} as any)
 const EthersIndexRoute = EthersIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => EthersRouteRoute,
-} as any);
+} as any)
 const WagmiDialogRoute = WagmiDialogRouteImport.update({
-  id: "/dialog",
-  path: "/dialog",
+  id: '/dialog',
+  path: '/dialog',
   getParentRoute: () => WagmiRouteRoute,
-} as any);
+} as any)
 const EthersDialogRoute = EthersDialogRouteImport.update({
-  id: "/dialog",
-  path: "/dialog",
+  id: '/dialog',
+  path: '/dialog',
   getParentRoute: () => EthersRouteRoute,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/ethers": typeof EthersRouteRouteWithChildren;
-  "/wagmi": typeof WagmiRouteRouteWithChildren;
-  "/ethers/dialog": typeof EthersDialogRoute;
-  "/wagmi/dialog": typeof WagmiDialogRoute;
-  "/ethers/": typeof EthersIndexRoute;
-  "/wagmi/": typeof WagmiIndexRoute;
+  '/': typeof IndexRoute
+  '/ethers': typeof EthersRouteRouteWithChildren
+  '/wagmi': typeof WagmiRouteRouteWithChildren
+  '/ethers/dialog': typeof EthersDialogRoute
+  '/wagmi/dialog': typeof WagmiDialogRoute
+  '/ethers/': typeof EthersIndexRoute
+  '/wagmi/': typeof WagmiIndexRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/ethers/dialog": typeof EthersDialogRoute;
-  "/wagmi/dialog": typeof WagmiDialogRoute;
-  "/ethers": typeof EthersIndexRoute;
-  "/wagmi": typeof WagmiIndexRoute;
+  '/': typeof IndexRoute
+  '/ethers/dialog': typeof EthersDialogRoute
+  '/wagmi/dialog': typeof WagmiDialogRoute
+  '/ethers': typeof EthersIndexRoute
+  '/wagmi': typeof WagmiIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/ethers": typeof EthersRouteRouteWithChildren;
-  "/wagmi": typeof WagmiRouteRouteWithChildren;
-  "/ethers/dialog": typeof EthersDialogRoute;
-  "/wagmi/dialog": typeof WagmiDialogRoute;
-  "/ethers/": typeof EthersIndexRoute;
-  "/wagmi/": typeof WagmiIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/ethers': typeof EthersRouteRouteWithChildren
+  '/wagmi': typeof WagmiRouteRouteWithChildren
+  '/ethers/dialog': typeof EthersDialogRoute
+  '/wagmi/dialog': typeof WagmiDialogRoute
+  '/ethers/': typeof EthersIndexRoute
+  '/wagmi/': typeof WagmiIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/ethers"
-    | "/wagmi"
-    | "/ethers/dialog"
-    | "/wagmi/dialog"
-    | "/ethers/"
-    | "/wagmi/";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/ethers/dialog" | "/wagmi/dialog" | "/ethers" | "/wagmi";
+    | '/'
+    | '/ethers'
+    | '/wagmi'
+    | '/ethers/dialog'
+    | '/wagmi/dialog'
+    | '/ethers/'
+    | '/wagmi/'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/ethers/dialog' | '/wagmi/dialog' | '/ethers' | '/wagmi'
   id:
-    | "__root__"
-    | "/"
-    | "/ethers"
-    | "/wagmi"
-    | "/ethers/dialog"
-    | "/wagmi/dialog"
-    | "/ethers/"
-    | "/wagmi/";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/ethers'
+    | '/wagmi'
+    | '/ethers/dialog'
+    | '/wagmi/dialog'
+    | '/ethers/'
+    | '/wagmi/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  EthersRouteRoute: typeof EthersRouteRouteWithChildren;
-  WagmiRouteRoute: typeof WagmiRouteRouteWithChildren;
+  IndexRoute: typeof IndexRoute
+  EthersRouteRoute: typeof EthersRouteRouteWithChildren
+  WagmiRouteRoute: typeof WagmiRouteRouteWithChildren
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/wagmi": {
-      id: "/wagmi";
-      path: "/wagmi";
-      fullPath: "/wagmi";
-      preLoaderRoute: typeof WagmiRouteRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/ethers": {
-      id: "/ethers";
-      path: "/ethers";
-      fullPath: "/ethers";
-      preLoaderRoute: typeof EthersRouteRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/wagmi/": {
-      id: "/wagmi/";
-      path: "/";
-      fullPath: "/wagmi/";
-      preLoaderRoute: typeof WagmiIndexRouteImport;
-      parentRoute: typeof WagmiRouteRoute;
-    };
-    "/ethers/": {
-      id: "/ethers/";
-      path: "/";
-      fullPath: "/ethers/";
-      preLoaderRoute: typeof EthersIndexRouteImport;
-      parentRoute: typeof EthersRouteRoute;
-    };
-    "/wagmi/dialog": {
-      id: "/wagmi/dialog";
-      path: "/dialog";
-      fullPath: "/wagmi/dialog";
-      preLoaderRoute: typeof WagmiDialogRouteImport;
-      parentRoute: typeof WagmiRouteRoute;
-    };
-    "/ethers/dialog": {
-      id: "/ethers/dialog";
-      path: "/dialog";
-      fullPath: "/ethers/dialog";
-      preLoaderRoute: typeof EthersDialogRouteImport;
-      parentRoute: typeof EthersRouteRoute;
-    };
+    '/wagmi': {
+      id: '/wagmi'
+      path: '/wagmi'
+      fullPath: '/wagmi'
+      preLoaderRoute: typeof WagmiRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ethers': {
+      id: '/ethers'
+      path: '/ethers'
+      fullPath: '/ethers'
+      preLoaderRoute: typeof EthersRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wagmi/': {
+      id: '/wagmi/'
+      path: '/'
+      fullPath: '/wagmi/'
+      preLoaderRoute: typeof WagmiIndexRouteImport
+      parentRoute: typeof WagmiRouteRoute
+    }
+    '/ethers/': {
+      id: '/ethers/'
+      path: '/'
+      fullPath: '/ethers/'
+      preLoaderRoute: typeof EthersIndexRouteImport
+      parentRoute: typeof EthersRouteRoute
+    }
+    '/wagmi/dialog': {
+      id: '/wagmi/dialog'
+      path: '/dialog'
+      fullPath: '/wagmi/dialog'
+      preLoaderRoute: typeof WagmiDialogRouteImport
+      parentRoute: typeof WagmiRouteRoute
+    }
+    '/ethers/dialog': {
+      id: '/ethers/dialog'
+      path: '/dialog'
+      fullPath: '/ethers/dialog'
+      preLoaderRoute: typeof EthersDialogRouteImport
+      parentRoute: typeof EthersRouteRoute
+    }
   }
 }
 
 interface EthersRouteRouteChildren {
-  EthersDialogRoute: typeof EthersDialogRoute;
-  EthersIndexRoute: typeof EthersIndexRoute;
+  EthersDialogRoute: typeof EthersDialogRoute
+  EthersIndexRoute: typeof EthersIndexRoute
 }
 
 const EthersRouteRouteChildren: EthersRouteRouteChildren = {
   EthersDialogRoute: EthersDialogRoute,
   EthersIndexRoute: EthersIndexRoute,
-};
+}
 
 const EthersRouteRouteWithChildren = EthersRouteRoute._addFileChildren(
   EthersRouteRouteChildren,
-);
+)
 
 interface WagmiRouteRouteChildren {
-  WagmiDialogRoute: typeof WagmiDialogRoute;
-  WagmiIndexRoute: typeof WagmiIndexRoute;
+  WagmiDialogRoute: typeof WagmiDialogRoute
+  WagmiIndexRoute: typeof WagmiIndexRoute
 }
 
 const WagmiRouteRouteChildren: WagmiRouteRouteChildren = {
   WagmiDialogRoute: WagmiDialogRoute,
   WagmiIndexRoute: WagmiIndexRoute,
-};
+}
 
 const WagmiRouteRouteWithChildren = WagmiRouteRoute._addFileChildren(
   WagmiRouteRouteChildren,
-);
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EthersRouteRoute: EthersRouteRouteWithChildren,
   WagmiRouteRoute: WagmiRouteRouteWithChildren,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
