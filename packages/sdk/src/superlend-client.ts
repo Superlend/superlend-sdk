@@ -5,6 +5,8 @@ import type {
   ApiResponse,
   ClientConfig,
   HttpError,
+  PortfolioRequest,
+  PortfolioResponse,
   SupplyCalldataRequest,
   SupplyCalldataResponse,
   TokenMarketsRequest,
@@ -41,7 +43,7 @@ export class SuperLendClient {
 
   private get headers(): Record<string, string> {
     const h: Record<string, string> = {
-      "x-api-key": this.apiKey,
+      "x-sdk-api-key": this.apiKey,
     };
     if (this.partnerId) {
       h["x-partner-id"] = this.partnerId;
@@ -77,6 +79,25 @@ export class SuperLendClient {
   ): ResultAsync<SupplyCalldataResponse, HttpError> {
     return request<ApiResponse<SupplyCalldataResponse>>(
       `${this.baseUrl}/sdk/action/supply`,
+      {
+        method: "POST",
+        body: params as unknown as Record<string, unknown>,
+        headers: this.headers,
+        timeout: this.timeout,
+        retries: this.retries,
+      },
+    ).map((res) => res.data);
+  }
+
+  /**
+   * Returns the user's lending and borrowing positions across all supported protocols.
+   * Optionally filter by chain, platform type, or specific market IDs.
+   */
+  getPortfolio(
+    params: PortfolioRequest,
+  ): ResultAsync<PortfolioResponse, HttpError> {
+    return request<ApiResponse<PortfolioResponse>>(
+      `${this.baseUrl}/sdk/portfolio`,
       {
         method: "POST",
         body: params as unknown as Record<string, unknown>,
