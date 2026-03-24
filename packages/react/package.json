@@ -10,7 +10,13 @@
     "directory": "packages/react"
   },
   "homepage": "https://github.com/superlend/superlend-sdk/tree/main/packages/react",
-  "keywords": ["superlend", "defi", "lending", "react", "widget"],
+  "keywords": [
+    "superlend",
+    "defi",
+    "lending",
+    "react",
+    "widget"
+  ],
   "type": "module",
   "exports": {
     ".": {
