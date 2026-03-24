@@ -16,6 +16,10 @@ export type ThemeConfig = {
   radius?: string;
   /** Border colour for the widget container and card borders. */
   border?: string;
+  /** Colour for positive values (e.g. supply APY). Defaults to green. */
+  positive?: string;
+  /** Colour for negative values (e.g. borrow APY). Defaults to red. */
+  negative?: string;
 };
 
 export type ResolvedTheme = Required<ThemeConfig>;

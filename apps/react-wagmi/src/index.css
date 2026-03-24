@@ -130,4 +130,7 @@
   [role="button"] {
     cursor: pointer;
   }
+  [data-rk] {
+    display: contents;
+  }
 }

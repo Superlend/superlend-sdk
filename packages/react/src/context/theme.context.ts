@@ -8,6 +8,8 @@ const DEFAULT_THEME: ResolvedTheme = {
   text: "#ffffff",
   radius: "8px",
   border: "rgba(255, 255, 255, 0.18)",
+  positive: "#16a34a",
+  negative: "#dc2626",
 };
 
 const resolveTheme = (theme?: ThemeConfig): ResolvedTheme => {

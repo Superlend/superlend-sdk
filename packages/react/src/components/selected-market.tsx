@@ -38,10 +38,13 @@ const SelectedMarket: React.FC<SelectedMarketProps> = ({ market }) => {
     color: theme.text,
   };
 
+  const apyColor =
+    market.supplyRate.current.net >= 0 ? theme.positive : theme.negative;
+
   const apyStyle: CSSProperties = {
-    fontSize: "14px",
+    fontSize: "0.875rem",
     fontWeight: 700,
-    color: theme.primary,
+    color: apyColor,
   };
 
   return (

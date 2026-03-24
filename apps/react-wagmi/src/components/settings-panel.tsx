@@ -1,7 +1,11 @@
 import type { WidgetVariant } from "@superlend/react-sdk";
 import type { ReactNode } from "react";
 import { TokenNetworkSelector } from "@/components/token-network-selector";
-import { PALETTE_GROUPS, RADIUS_OPTIONS } from "@/config/theme-palettes";
+import {
+  BACKGROUNDS,
+  ACCENT_COLORS,
+  RADIUS_OPTIONS,
+} from "@/config/theme-palettes";
 import { useDemoSettings } from "@/context/demo-settings";
 import { useWidgetTheme } from "@/context/widget-theme";
 
@@ -29,6 +33,20 @@ function SectionLabel({
   );
 }
 
+function SubLabel({
+  children,
+  theme,
+}: { children: ReactNode; theme: { text: string } }) {
+  return (
+    <p
+      className="mb-2 text-[10px] font-medium uppercase tracking-wider"
+      style={{ color: `${theme.text}66` }}
+    >
+      {children}
+    </p>
+  );
+}
+
 function PanelShell({ children }: { children: ReactNode }) {
   const { theme } = useWidgetTheme();
   return (
@@ -45,74 +63,83 @@ function PanelShell({ children }: { children: ReactNode }) {
   );
 }
 
-/** Theme-only sections shared by both panels */
 function ThemeSections() {
-  const { theme, updateTheme, setPalette } = useWidgetTheme();
+  const { theme, background, accent, setBackground, setAccent, setRadius } =
+    useWidgetTheme();
 
   return (
     <>
       <div>
-        <SectionLabel theme={theme}>Network & Token</SectionLabel>
-        <TokenNetworkSelector />
+        <SectionLabel theme={theme}>Background / Theme</SectionLabel>
+        <div className="grid grid-cols-4 gap-1.5">
+          {BACKGROUNDS.map((bg) => {
+            const isActive = background.name === bg.name;
+            return (
+              <button
+                type="button"
+                key={bg.name}
+                onClick={() => setBackground(bg)}
+                className="flex flex-col items-center gap-1 rounded-md p-1.5 transition-colors"
+                style={{
+                  border: `1px solid ${isActive ? theme.primary : `${theme.text}20`}`,
+                  backgroundColor: isActive
+                    ? `${theme.primary}15`
+                    : "transparent",
+                }}
+              >
+                <span
+                  className="size-5 rounded-sm border"
+                  style={{
+                    background: bg.bg,
+                    borderColor: bg.isDark
+                      ? "rgba(255,255,255,0.2)"
+                      : "rgba(0,0,0,0.1)",
+                  }}
+                />
+                <span
+                  className="text-[8px] leading-none"
+                  style={{ color: `${theme.text}88` }}
+                >
+                  {bg.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div>
-        <SectionLabel theme={theme}>Color Palette</SectionLabel>
-        <div className="flex flex-col gap-4">
-          {PALETTE_GROUPS.map((group) => (
-            <div key={group.label}>
-              <p
-                className="mb-2 text-[10px] font-medium uppercase tracking-wider"
-                style={{ color: `${theme.text}66` }}
+        <SectionLabel theme={theme}>Main Color</SectionLabel>
+        <div className="grid grid-cols-6 gap-1.5">
+          {ACCENT_COLORS.map((color) => {
+            const isActive = accent.name === color.name;
+            return (
+              <button
+                type="button"
+                key={color.name}
+                onClick={() => setAccent(color)}
+                className="flex flex-col items-center gap-1 rounded-md p-1.5 transition-colors"
+                style={{
+                  border: `1px solid ${isActive ? theme.primary : `${theme.text}20`}`,
+                  backgroundColor: isActive
+                    ? `${theme.primary}15`
+                    : "transparent",
+                }}
+                title={color.name}
               >
-                {group.label}
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                {group.palettes.map((palette) => {
-                  const isActive =
-                    theme.bg === palette.theme.bg &&
-                    theme.primary === palette.theme.primary;
-                  return (
-                    <button
-                      type="button"
-                      key={palette.name}
-                      onClick={() => setPalette(palette.theme)}
-                      className="flex flex-col items-center gap-1.5 rounded-md border p-2 transition-colors"
-                      style={{
-                        borderColor: isActive
-                          ? theme.primary
-                          : `${theme.text}20`,
-                        backgroundColor: isActive
-                          ? `${theme.primary}15`
-                          : "transparent",
-                      }}
-                    >
-                      <div className="flex gap-0.5">
-                        <span
-                          className="size-2.5 rounded-full"
-                          style={{ background: palette.theme.bg }}
-                        />
-                        <span
-                          className="size-2.5 rounded-full"
-                          style={{ background: palette.theme.primary }}
-                        />
-                        <span
-                          className="size-2.5 rounded-full"
-                          style={{ background: palette.theme.accent }}
-                        />
-                      </div>
-                      <span
-                        className="text-[9px] leading-none"
-                        style={{ color: `${theme.text}88` }}
-                      >
-                        {palette.name}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+                <span
+                  className="size-4 rounded-full"
+                  style={{ background: color.swatch }}
+                />
+                <span
+                  className="text-[7px] leading-none"
+                  style={{ color: `${theme.text}88` }}
+                >
+                  {color.name}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -123,7 +150,7 @@ function ThemeSections() {
             <button
               type="button"
               key={opt.value}
-              onClick={() => updateTheme("radius", opt.value)}
+              onClick={() => setRadius(opt.value)}
               className="flex-1 rounded py-1 text-[10px] font-medium transition-colors"
               style={{
                 border: `1px solid ${theme.radius === opt.value ? theme.primary : `${theme.text}20`}`,
@@ -168,6 +195,11 @@ export function SettingsPanel({
           {walletButton}
         </div>
       )}
+
+      <div>
+        <SectionLabel theme={theme}>Network & Token</SectionLabel>
+        <TokenNetworkSelector />
+      </div>
 
       <div>
         <SectionLabel theme={theme}>Variant</SectionLabel>
