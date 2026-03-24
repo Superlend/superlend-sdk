@@ -77,7 +77,7 @@ const PositionCard: React.FC<PositionCardProps> = ({ platformPosition }) => {
     objectFit: "cover",
   };
 
-  const typeBadgeStyle = (_type: "LEND" | "BORROW"): CSSProperties => ({
+  const typeBadgeStyle = (): CSSProperties => ({
     fontSize: "10px",
     fontWeight: 600,
     color: theme.primary,
@@ -144,7 +144,7 @@ const PositionCard: React.FC<PositionCardProps> = ({ platformPosition }) => {
                 </div>
               )}
             </div>
-            <span style={typeBadgeStyle(position.type)}>{position.type}</span>
+            <span style={typeBadgeStyle()}>{position.type}</span>
           </div>
           <div style={rightStyle}>
             <div style={apyStyle(position.apy.net)}>
