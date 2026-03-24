@@ -68,9 +68,9 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
   const marketTx = useTransaction({ client, walletClient });
   const vaultTx = useVaultTransaction({ client, walletClient });
 
-  const [view, setView] = useState<"opportunities" | "amount-input" | "transaction">(
-    "opportunities",
-  );
+  const [view, setView] = useState<
+    "opportunities" | "amount-input" | "transaction"
+  >("opportunities");
   const [selected, setSelected] = useState<CombinedSelectedOpportunity | null>(
     null,
   );
@@ -149,7 +149,8 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
     });
   };
 
-  const isLoading = marketQuery.isLoading || (includeVaults && vaultQuery.isLoading);
+  const isLoading =
+    marketQuery.isLoading || (includeVaults && vaultQuery.isLoading);
   if (isLoading) {
     return <WidgetSkeleton />;
   }
@@ -165,7 +166,7 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
   }
 
   const markets = marketQuery.data?.markets ?? [];
-  const vaults = includeVaults ? vaultQuery.data?.vaults ?? [] : [];
+  const vaults = includeVaults ? (vaultQuery.data?.vaults ?? []) : [];
 
   if (markets.length === 0 && vaults.length === 0) {
     const emptyStyle: CSSProperties = {
@@ -345,7 +346,10 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
                   key={`market-${market.platform.platformId}`}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ ...spring, delay: (vaultList.length + i) * 0.04 }}
+                  transition={{
+                    ...spring,
+                    delay: (vaultList.length + i) * 0.04,
+                  }}
                 >
                   <MarketCard
                     market={market}
@@ -356,9 +360,9 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
                   />
                 </motion.div>
               ))}
-              {!vaultsFirst && vaultList.length > 0 && marketList.length > 0 && (
-                <hr style={separatorStyle} />
-              )}
+              {!vaultsFirst &&
+                vaultList.length > 0 &&
+                marketList.length > 0 && <hr style={separatorStyle} />}
               {!vaultsFirst && vaultList.length > 0 && (
                 <>
                   <div style={sectionLabelStyle}>Superlend Vaults</div>
@@ -367,7 +371,10 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
                       key={`vault-tail-${vault.vaultId}`}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ ...spring, delay: (marketList.length + i) * 0.04 }}
+                      transition={{
+                        ...spring,
+                        delay: (marketList.length + i) * 0.04,
+                      }}
                     >
                       <VaultOpportunityCard
                         vault={vault}

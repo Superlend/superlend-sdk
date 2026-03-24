@@ -3,7 +3,10 @@ import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import type { CSSProperties } from "react";
 import { useTheme } from "../context/theme.context";
-import type { StepStatus, VaultTransactionSteps } from "../hooks/vault-transaction.hooks";
+import type {
+  StepStatus,
+  VaultTransactionSteps,
+} from "../hooks/vault-transaction.hooks";
 import { ActionButton } from "./action-button";
 import { SelectedVault } from "./selected-vault";
 

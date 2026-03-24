@@ -55,7 +55,10 @@ export function WagmiWidgetDemo() {
             Let's put them to good use
           </p>
         </div>
-        <label className="flex items-center gap-2 text-xs" style={{ color: theme.text }}>
+        <label
+          className="flex items-center gap-2 text-xs"
+          style={{ color: theme.text }}
+        >
           <input
             type="checkbox"
             checked={includeVaults}

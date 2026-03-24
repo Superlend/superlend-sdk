@@ -81,11 +81,7 @@ const VaultOpportunityCard: React.FC<VaultOpportunityCardProps> = ({
       onClick={() => onSelect(vault)}
     >
       <div style={leftStyle}>
-        <img
-          src={vault.vault.logo}
-          alt={vault.vault.name}
-          style={logoStyle}
-        />
+        <img src={vault.vault.logo} alt={vault.vault.name} style={logoStyle} />
         <div>
           <div style={nameStyle}>{vault.vault.name}</div>
           <div style={metaStyle}>{vault.vault.symbol}</div>

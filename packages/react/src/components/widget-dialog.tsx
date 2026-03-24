@@ -1,12 +1,12 @@
 import { Dialog } from "@base-ui/react/dialog";
 import type React from "react";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 import { useTheme } from "../context/theme.context";
 import { PoweredBy } from "./powered-by";
 
 type WidgetDialogProps = {
   children: ReactNode;
-  trigger?: ReactNode;
+  trigger?: ReactElement;
 };
 
 const WidgetDialog: React.FC<WidgetDialogProps> = ({ children, trigger }) => {

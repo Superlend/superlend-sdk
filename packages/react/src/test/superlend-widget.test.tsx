@@ -34,7 +34,7 @@ function renderWidget(props?: Partial<Parameters<typeof SuperLendWidget>[0]>) {
       <SuperLendWidget
         apiKey="test-key"
         tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-        amount="10000000"
+        initialAmount="10000000"
         chainId={1}
         includeVaults={false}
         baseUrl={BASE_URL}
@@ -155,7 +155,8 @@ describe("SuperLendWidget", () => {
                   priceUsd: 1,
                 },
                 vaultId: "v1",
-                defaultDepositToken: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                defaultDepositToken:
+                  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
                 depositTokens: [
                   {
                     type: "DIRECT",

@@ -45,7 +45,9 @@ const AmountInput: React.FC<AmountInputProps> = ({
 }) => {
   const theme = useTheme();
   const decimals = market.token.decimals;
-  const [value, setValue] = useState(() => rawToHuman(defaultAmount, decimals));
+  const [value, setValue] = useState(() =>
+    rawToHuman(defaultAmount ?? "", decimals),
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;

@@ -47,11 +47,7 @@ const SelectedVault: React.FC<SelectedVaultProps> = ({ vault }) => {
   return (
     <div style={containerStyle}>
       <div style={leftStyle}>
-        <img
-          src={vault.vault.logo}
-          alt={vault.vault.name}
-          style={logoStyle}
-        />
+        <img src={vault.vault.logo} alt={vault.vault.name} style={logoStyle} />
         <span style={nameStyle}>{vault.vault.name}</span>
       </div>
       <span style={apyStyle}>{vault.apy.net.toFixed(2)}% APY</span>

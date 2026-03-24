@@ -1,4 +1,7 @@
-import type { SuperLendClient, TokenVaultMarketsResponse } from "@superlend/sdk";
+import type {
+  SuperLendClient,
+  TokenVaultMarketsResponse,
+} from "@superlend/sdk";
 import { useQuery } from "@tanstack/react-query";
 
 type UseVaultMarketsParams = {
@@ -8,7 +11,10 @@ type UseVaultMarketsParams = {
 };
 
 /** Fetches and caches Superlend vault opportunities for the given token and chain. */
-const useVaultMarkets = (client: SuperLendClient, params: UseVaultMarketsParams) => {
+const useVaultMarkets = (
+  client: SuperLendClient,
+  params: UseVaultMarketsParams,
+) => {
   return useQuery<TokenVaultMarketsResponse>({
     queryKey: ["superlend", "vaults", params.tokenAddress, params.chainId],
     queryFn: async () => {

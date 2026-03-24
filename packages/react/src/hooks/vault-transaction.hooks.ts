@@ -283,6 +283,6 @@ export {
   type ExecuteVaultParams,
   type StepState,
   type StepStatus,
-  useVaultTransaction,
   type UseVaultTransactionOptions,
+  useVaultTransaction,
 };

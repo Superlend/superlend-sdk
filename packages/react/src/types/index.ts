@@ -63,7 +63,9 @@ type WidgetCommonProps = {
 };
 
 export type WidgetOpportunity = Market | VaultOpportunity;
-export type WidgetCalldata = SupplyCalldataResponse | VaultDepositCalldataResponse;
+export type WidgetCalldata =
+  | SupplyCalldataResponse
+  | VaultDepositCalldataResponse;
 
 export type WidgetProps = WidgetCommonProps & {
   /**
