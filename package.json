@@ -14,7 +14,8 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "build:react-wagmi": "pnpm --filter @superlend/sdk build && pnpm --filter @superlend/react-sdk build && pnpm --filter react-wagmi build"
+    "build:react-wagmi": "pnpm --filter @superlend/sdk build && pnpm --filter @superlend/react-sdk build && pnpm --filter react-wagmi build",
+    "dev:react-wagmi": "pnpm --filter @superlend/sdk build && pnpm --filter @superlend/react-sdk build && pnpm --filter react-wagmi dev"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.7",
