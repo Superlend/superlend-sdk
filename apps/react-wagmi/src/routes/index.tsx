@@ -9,8 +9,13 @@ function HomePage() {
   return (
     <PageLayout rightPane={<ThemePanel />}>
       <div className="flex flex-col items-center gap-6 py-12 text-center">
+        <img
+          src="/superlend-logo.webp"
+          alt="SuperLend"
+          className="h-8"
+        />
         <div>
-          <h2 className="text-lg font-semibold">SuperLend SDK Demo</h2>
+          <h2 className="text-lg font-semibold">SDK Demo</h2>
           <p className="mt-1 text-sm opacity-60">
             Choose a wallet adapter to explore the widget integration
           </p>

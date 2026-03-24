@@ -12,10 +12,10 @@ export function PageLayout({
     <div className="flex min-h-0 flex-1">
       <NavPanel />
       <main
-        className="flex-1 overflow-y-auto transition-colors duration-300"
+        className="flex flex-1 flex-col gap-4 overflow-y-auto px-6 py-8 transition-colors duration-300"
         style={{ backgroundColor: theme.bg, color: theme.text }}
       >
-        <div className="mx-auto w-full max-w-md px-6 py-8">{children}</div>
+        {children}
       </main>
       {rightPane}
     </div>

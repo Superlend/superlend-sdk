@@ -6,6 +6,8 @@ type DemoSettingsContextValue = {
   setVariant: (v: WidgetVariant) => void;
   useCallback: boolean;
   setUseCallback: (v: boolean) => void;
+  showCode: boolean;
+  setShowCode: (v: boolean) => void;
 };
 
 const DemoSettingsContext = createContext<DemoSettingsContextValue | null>(null);
@@ -17,10 +19,11 @@ export function DemoSettingsProvider({
 }) {
   const [variant, setVariant] = useState<WidgetVariant>("inline");
   const [useCallback, setUseCallback] = useState(false);
+  const [showCode, setShowCode] = useState(false);
 
   return (
     <DemoSettingsContext.Provider
-      value={{ variant, setVariant, useCallback, setUseCallback }}
+      value={{ variant, setVariant, useCallback, setUseCallback, showCode, setShowCode }}
     >
       {children}
     </DemoSettingsContext.Provider>

@@ -184,7 +184,7 @@ export function SettingsPanel({
   walletButton,
 }: { walletButton?: ReactNode }) {
   const { theme } = useWidgetTheme();
-  const { variant, setVariant, useCallback, setUseCallback } =
+  const { variant, setVariant, useCallback, setUseCallback, showCode, setShowCode } =
     useDemoSettings();
 
   return (
@@ -245,6 +245,33 @@ export function SettingsPanel({
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span
+          className="text-xs font-semibold"
+          style={{ color: `${theme.text}aa` }}
+        >
+          Code Preview
+        </span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={showCode}
+          onClick={() => setShowCode(!showCode)}
+          className="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full transition-colors duration-200"
+          style={{
+            backgroundColor: showCode ? theme.primary : `${theme.text}30`,
+          }}
+        >
+          <span
+            className="pointer-events-none inline-block size-4 rounded-full bg-white shadow-sm transition-transform duration-200"
+            style={{
+              transform: showCode ? "translateX(17px)" : "translateX(2px)",
+              marginTop: "2px",
+            }}
+          />
+        </button>
       </div>
 
       <hr style={{ borderColor: `${theme.text}15` }} />
