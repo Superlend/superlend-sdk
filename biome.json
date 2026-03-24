@@ -12,6 +12,11 @@
     }
   },
   "files": {
-    "includes": ["packages/**/*", "apps/**/*", "!packages/**/dist", "!apps/**/dist"]
+    "includes": [
+      "packages/**/*",
+      "apps/**/*",
+      "!packages/**/dist",
+      "!apps/**/dist"
+    ]
   }
 }

@@ -159,7 +159,13 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-export function CodePreview({ mode, adapter = "wagmi" }: { mode: CodePreviewMode; adapter?: CodePreviewAdapter }) {
+export function CodePreview({
+  mode,
+  adapter = "wagmi",
+}: {
+  mode: CodePreviewMode;
+  adapter?: CodePreviewAdapter;
+}) {
   const aggregatorCode = useAggregatorSnippet(adapter);
   const portfolioCode = usePortfolioSnippet();
   const code = mode === "portfolio" ? portfolioCode : aggregatorCode;
@@ -173,18 +179,18 @@ export function CodePreview({ mode, adapter = "wagmi" }: { mode: CodePreviewMode
 
   return (
     <>
-    <hr style={{ borderColor: `${theme.text}15` }} />
-    <div
-      className="relative overflow-hidden rounded-lg border"
-      style={{ borderColor: `${theme.text}15` }}
-    >
-      <CopyButton text={code} />
+      <hr style={{ borderColor: `${theme.text}15` }} />
       <div
-        className="overflow-x-auto text-xs leading-relaxed [&_pre]:!bg-transparent [&_pre]:p-4"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    </div>
+        className="relative overflow-hidden rounded-lg border"
+        style={{ borderColor: `${theme.text}15` }}
+      >
+        <CopyButton text={code} />
+        <div
+          className="overflow-x-auto text-xs leading-relaxed [&_pre]:!bg-transparent [&_pre]:p-4"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      </div>
     </>
   );
 }

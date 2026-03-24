@@ -2,8 +2,8 @@ import type { WidgetVariant } from "@superlend/react-sdk";
 import type { ReactNode } from "react";
 import { TokenNetworkSelector } from "@/components/token-network-selector";
 import {
-  BACKGROUNDS,
   ACCENT_COLORS,
+  BACKGROUNDS,
   RADIUS_OPTIONS,
 } from "@/config/theme-palettes";
 import { useDemoSettings } from "@/context/demo-settings";
@@ -22,7 +22,10 @@ const WALLET_MODES: { value: boolean; label: string }[] = [
 function SectionLabel({
   children,
   theme,
-}: { children: ReactNode; theme: { text: string } }) {
+}: {
+  children: ReactNode;
+  theme: { text: string };
+}) {
   return (
     <p
       className="mb-2 text-xs font-semibold"
@@ -36,7 +39,10 @@ function SectionLabel({
 function SubLabel({
   children,
   theme,
-}: { children: ReactNode; theme: { text: string } }) {
+}: {
+  children: ReactNode;
+  theme: { text: string };
+}) {
   return (
     <p
       className="mb-2 text-[10px] font-medium uppercase tracking-wider"
@@ -180,12 +186,16 @@ export function ThemePanel() {
 }
 
 /** Right pane for adapter routes — wallet + props + theme */
-export function SettingsPanel({
-  walletButton,
-}: { walletButton?: ReactNode }) {
+export function SettingsPanel({ walletButton }: { walletButton?: ReactNode }) {
   const { theme } = useWidgetTheme();
-  const { variant, setVariant, useCallback, setUseCallback, showCode, setShowCode } =
-    useDemoSettings();
+  const {
+    variant,
+    setVariant,
+    useCallback,
+    setUseCallback,
+    showCode,
+    setShowCode,
+  } = useDemoSettings();
 
   return (
     <PanelShell>

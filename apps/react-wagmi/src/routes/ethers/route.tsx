@@ -8,9 +8,7 @@ export const Route = createFileRoute("/ethers")({
   component: () => (
     <EthersWalletProvider>
       <PageLayout
-        rightPane={
-          <SettingsPanel walletButton={<EthersConnectButton />} />
-        }
+        rightPane={<SettingsPanel walletButton={<EthersConnectButton />} />}
       >
         <Outlet />
       </PageLayout>

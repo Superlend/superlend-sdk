@@ -10,7 +10,9 @@ type DemoSettingsContextValue = {
   setShowCode: (v: boolean) => void;
 };
 
-const DemoSettingsContext = createContext<DemoSettingsContextValue | null>(null);
+const DemoSettingsContext = createContext<DemoSettingsContextValue | null>(
+  null,
+);
 
 export function DemoSettingsProvider({
   children,
@@ -23,7 +25,14 @@ export function DemoSettingsProvider({
 
   return (
     <DemoSettingsContext.Provider
-      value={{ variant, setVariant, useCallback, setUseCallback, showCode, setShowCode }}
+      value={{
+        variant,
+        setVariant,
+        useCallback,
+        setUseCallback,
+        showCode,
+        setShowCode,
+      }}
     >
       {children}
     </DemoSettingsContext.Provider>
@@ -33,8 +42,6 @@ export function DemoSettingsProvider({
 export function useDemoSettings() {
   const ctx = useContext(DemoSettingsContext);
   if (!ctx)
-    throw new Error(
-      "useDemoSettings must be used within DemoSettingsProvider",
-    );
+    throw new Error("useDemoSettings must be used within DemoSettingsProvider");
   return ctx;
 }

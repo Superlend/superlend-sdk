@@ -137,7 +137,8 @@ const PositionCard: React.FC<PositionCardProps> = ({ platformPosition }) => {
               </div>
               {position.amountUsd > 0 && (
                 <div style={amountStyle}>
-                  ${position.amountUsd.toLocaleString(undefined, {
+                  $
+                  {position.amountUsd.toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   })}
                 </div>
@@ -146,7 +147,9 @@ const PositionCard: React.FC<PositionCardProps> = ({ platformPosition }) => {
             <span style={typeBadgeStyle(position.type)}>{position.type}</span>
           </div>
           <div style={rightStyle}>
-            <div style={apyStyle(position.apy.net)}>{position.apy.net.toFixed(2)}%</div>
+            <div style={apyStyle(position.apy.net)}>
+              {position.apy.net.toFixed(2)}%
+            </div>
             <div style={amountStyle}>APY</div>
           </div>
         </div>

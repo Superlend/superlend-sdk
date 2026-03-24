@@ -1,11 +1,11 @@
 import type { ThemeConfig } from "@superlend/react-sdk";
 import { createContext, useContext, useState } from "react";
 import {
-  BACKGROUNDS,
   ACCENT_COLORS,
-  buildTheme,
-  type BackgroundOption,
   type AccentColor,
+  BACKGROUNDS,
+  type BackgroundOption,
+  buildTheme,
 } from "@/config/theme-palettes";
 
 type WidgetThemeContextValue = {

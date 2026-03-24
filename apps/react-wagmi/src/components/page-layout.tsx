@@ -5,7 +5,10 @@ import { useWidgetTheme } from "@/context/widget-theme";
 export function PageLayout({
   children,
   rightPane,
-}: { children: ReactNode; rightPane?: ReactNode }) {
+}: {
+  children: ReactNode;
+  rightPane?: ReactNode;
+}) {
   const { theme } = useWidgetTheme();
 
   return (
