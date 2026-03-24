@@ -76,7 +76,7 @@ function useAggregatorSnippet(adapter: CodePreviewAdapter) {
 
     push(`apiKey="your-api-key"`);
     push(`tokenAddress="${token.address}"`);
-    push(`amount="${token.demoAmount}"`);
+    push(`initialAmount="${token.demoAmount}"`);
     push(`chainId={${network.chainId}}`);
     push(`userAddress={address}`);
 

@@ -23,7 +23,7 @@ const spring = { type: "spring" as const, stiffness: 300, damping: 30 };
 type WidgetContentProps = {
   client: SuperLendClient;
   tokenAddress: string;
-  amount: string;
+  amount?: string;
   chainId: number;
   userAddress?: string;
   limit?: number;
@@ -232,7 +232,7 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
 const SuperLendWidget: React.FC<WidgetProps> = ({
   apiKey,
   tokenAddress,
-  amount,
+  initialAmount,
   chainId,
   userAddress,
   variant = "inline",
@@ -286,7 +286,7 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
     <WidgetContent
       client={client}
       tokenAddress={tokenAddress}
-      amount={amount}
+      amount={initialAmount}
       chainId={chainId}
       userAddress={userAddress}
       limit={limit}

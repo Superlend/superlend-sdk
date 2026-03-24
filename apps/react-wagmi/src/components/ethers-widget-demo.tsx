@@ -51,7 +51,7 @@ export function EthersWidgetDemo() {
         <SuperLendWidget
           apiKey={import.meta.env.VITE_SUPERLEND_API_KEY || ""}
           tokenAddress={token.address}
-          amount={token.demoAmount}
+          initialAmount={token.demoAmount}
           chainId={network.chainId}
           userAddress={address}
           variant={variant}
