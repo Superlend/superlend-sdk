@@ -21,8 +21,11 @@ const usePortfolio = (client: SuperLendClient, params: UsePortfolioParams) => {
       params.marketIds,
     ],
     queryFn: async () => {
+      if (!params.userAddress) {
+        throw new Error("userAddress is required to fetch portfolio");
+      }
       const result = await client.getPortfolio({
-        userAddress: params.userAddress ?? "",
+        userAddress: params.userAddress,
         chainIds: params.chainIds,
         types: params.types,
         marketIds: params.marketIds,
