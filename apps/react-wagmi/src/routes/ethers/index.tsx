@@ -1,6 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { EthersWidgetDemo } from "@/components/ethers-widget-demo";
+import { Navigate, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/ethers/")({
-  component: EthersWidgetDemo,
+  component: () => <Navigate to="/ethers/aggregators" />,
 });

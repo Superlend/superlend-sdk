@@ -12,8 +12,8 @@ const NAV_TREE = [
   {
     label: "ethers",
     children: [
-      { to: "/ethers", label: "aggregator" },
-      { to: "/ethers/dialog", label: "portfolio" },
+      { to: "/ethers/aggregators", label: "aggregator" },
+      { to: "/ethers/portfolio", label: "portfolio" },
     ],
   },
 ] as const;
