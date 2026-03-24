@@ -2,9 +2,9 @@ import "@rainbow-me/rainbowkit/styles.css";
 
 import {
   ConnectButton,
-  RainbowKitProvider,
   darkTheme,
   lightTheme,
+  RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { WagmiProvider } from "wagmi";

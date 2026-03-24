@@ -77,7 +77,7 @@ const PositionCard: React.FC<PositionCardProps> = ({ platformPosition }) => {
     objectFit: "cover",
   };
 
-  const typeBadgeStyle = (type: "LEND" | "BORROW"): CSSProperties => ({
+  const typeBadgeStyle = (_type: "LEND" | "BORROW"): CSSProperties => ({
     fontSize: "10px",
     fontWeight: 600,
     color: theme.primary,

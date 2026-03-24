@@ -36,22 +36,6 @@ function SectionLabel({
   );
 }
 
-function SubLabel({
-  children,
-  theme,
-}: {
-  children: ReactNode;
-  theme: { text: string };
-}) {
-  return (
-    <p
-      className="mb-2 text-[10px] font-medium uppercase tracking-wider"
-      style={{ color: `${theme.text}66` }}
-    >
-      {children}
-    </p>
-  );
-}
 
 function PanelShell({ children }: { children: ReactNode }) {
   const { theme } = useWidgetTheme();

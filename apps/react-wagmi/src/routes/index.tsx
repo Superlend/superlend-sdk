@@ -1,11 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageLayout } from "@/components/page-layout";
 import { ThemePanel } from "@/components/settings-panel";
-import { useWidgetTheme } from "@/context/widget-theme";
 
 function HomePage() {
-  const { theme } = useWidgetTheme();
-
   return (
     <PageLayout rightPane={<ThemePanel />}>
       <div className="flex flex-col items-center gap-6 py-12 text-center">
