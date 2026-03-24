@@ -1,6 +1,6 @@
 {
   "name": "@superlend/react-sdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React widget and hooks for SuperLend",
   "license": "MIT",
   "author": "SuperLend",
@@ -10,7 +10,13 @@
     "directory": "packages/react"
   },
   "homepage": "https://github.com/superlend/superlend-sdk/tree/main/packages/react",
-  "keywords": ["superlend", "defi", "lending", "react", "widget"],
+  "keywords": [
+    "superlend",
+    "defi",
+    "lending",
+    "react",
+    "widget"
+  ],
   "type": "module",
   "exports": {
     ".": {
