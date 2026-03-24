@@ -9,6 +9,10 @@ import type {
   SupplyCalldataResponse,
   TokenMarketsRequest,
   TokenMarketsResponse,
+  TokenVaultMarketsRequest,
+  TokenVaultMarketsResponse,
+  VaultDepositCalldataRequest,
+  VaultDepositCalldataResponse,
 } from "./types";
 
 /**
@@ -41,7 +45,7 @@ export class SuperLendClient {
 
   private get headers(): Record<string, string> {
     const h: Record<string, string> = {
-      "x-api-key": this.apiKey,
+      "x-sdk-api-key": this.apiKey,
     };
     if (this.partnerId) {
       h["x-partner-id"] = this.partnerId;
@@ -77,6 +81,42 @@ export class SuperLendClient {
   ): ResultAsync<SupplyCalldataResponse, HttpError> {
     return request<ApiResponse<SupplyCalldataResponse>>(
       `${this.baseUrl}/sdk/action/supply`,
+      {
+        method: "POST",
+        body: params as unknown as Record<string, unknown>,
+        headers: this.headers,
+        timeout: this.timeout,
+        retries: this.retries,
+      },
+    ).map((res) => res.data);
+  }
+
+  /**
+   * Returns Superlend vault opportunities for a token on a chain (default deposit token only).
+   */
+  getVaultMarkets(
+    params: TokenVaultMarketsRequest,
+  ): ResultAsync<TokenVaultMarketsResponse, HttpError> {
+    return request<ApiResponse<TokenVaultMarketsResponse>>(
+      `${this.baseUrl}/sdk/vaults/token`,
+      {
+        method: "POST",
+        body: params as unknown as Record<string, unknown>,
+        headers: this.headers,
+        timeout: this.timeout,
+        retries: this.retries,
+      },
+    ).map((res) => res.data);
+  }
+
+  /**
+   * Builds calldata for a direct vault deposit (LOOP or FUND) using the vault's default underlying token.
+   */
+  buildVaultDepositCalldata(
+    params: VaultDepositCalldataRequest,
+  ): ResultAsync<VaultDepositCalldataResponse, HttpError> {
+    return request<ApiResponse<VaultDepositCalldataResponse>>(
+      `${this.baseUrl}/sdk/action/vault/deposit`,
       {
         method: "POST",
         body: params as unknown as Record<string, unknown>,

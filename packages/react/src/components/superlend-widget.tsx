@@ -1,120 +1,160 @@
-import type { Market } from "@superlend/sdk";
+import type { Market, VaultOpportunity } from "@superlend/sdk";
 import { SuperLendClient } from "@superlend/sdk";
 import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import type { CSSProperties } from "react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { resolveTheme, ThemeContext } from "../context/theme.context";
 import { useMarkets } from "../hooks/opportunities.hooks";
 import { useTransaction } from "../hooks/transaction.hooks";
-import { useWidgetFlow } from "../hooks/widget-flow.hooks";
+import { useVaultMarkets } from "../hooks/vault-opportunities.hooks";
+import { useVaultTransaction } from "../hooks/vault-transaction.hooks";
 import { injectStyles } from "../styles/inject.utils";
 import type { WidgetProps } from "../types";
 import { AmountInput } from "./amount-input";
 import { MarketCard } from "./opportunity-card";
 import { PoweredBy } from "./powered-by";
 import { TransactionFlow } from "./transaction-flow";
+import { VaultAmountInput } from "./vault-amount-input";
+import { VaultOpportunityCard } from "./vault-opportunity-card";
+import { VaultTransactionFlow } from "./vault-transaction-flow";
 import { WidgetDialog } from "./widget-dialog";
 import { WidgetHeader } from "./widget-header";
 import { WidgetSkeleton } from "./widget-skeleton";
 
 const spring = { type: "spring" as const, stiffness: 300, damping: 30 };
 
-type WidgetContentProps = {
+type CombinedSelectedOpportunity =
+  | { kind: "market"; market: Market }
+  | { kind: "vault"; vault: VaultOpportunity };
+
+type CombinedWidgetContentProps = {
   client: SuperLendClient;
   tokenAddress: string;
   amount: string;
   chainId: number;
   userAddress?: string;
   limit?: number;
+  includeVaults: boolean;
+  vaultsFirst: boolean;
   walletClient?: WidgetProps["walletClient"];
   onAction?: WidgetProps["onAction"];
   onConnectWallet?: WidgetProps["onConnectWallet"];
 };
 
-const WidgetContent: React.FC<WidgetContentProps> = ({
+const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
   client,
   tokenAddress,
   amount,
   chainId,
   userAddress,
   limit,
+  includeVaults,
+  vaultsFirst,
   walletClient,
   onAction,
   onConnectWallet,
 }) => {
-  const { data, isLoading, error } = useMarkets(client, {
+  const marketQuery = useMarkets(client, {
     tokenAddress,
     chainId,
   });
+  const vaultQuery = useVaultMarkets(client, {
+    tokenAddress,
+    chainId,
+    enabled: includeVaults,
+  });
 
-  const flow = useWidgetFlow();
-  const tx = useTransaction({ client, walletClient });
+  const marketTx = useTransaction({ client, walletClient });
+  const vaultTx = useVaultTransaction({ client, walletClient });
 
-  const prevViewRef = useRef(flow.state.view);
+  const [view, setView] = useState<"opportunities" | "amount-input" | "transaction">(
+    "opportunities",
+  );
+  const [selected, setSelected] = useState<CombinedSelectedOpportunity | null>(
+    null,
+  );
+  const [confirmedAmount, setConfirmedAmount] = useState<string>(amount);
+
+  const prevViewRef = useRef(view);
   const viewOrder = ["opportunities", "amount-input", "transaction"] as const;
-  const prevIdx = viewOrder.indexOf(
-    prevViewRef.current as (typeof viewOrder)[number],
-  );
-  const currIdx = viewOrder.indexOf(
-    flow.state.view as (typeof viewOrder)[number],
-  );
+  const prevIdx = viewOrder.indexOf(prevViewRef.current);
+  const currIdx = viewOrder.indexOf(view);
   const direction = currIdx >= prevIdx ? 1 : -1;
 
   useEffect(() => {
-    prevViewRef.current = flow.state.view;
-  }, [flow.state.view]);
-
-  const handleSelectMarket = (market: Market) => {
-    flow.selectMarket(market);
-  };
+    prevViewRef.current = view;
+  }, [view]);
 
   const needsWallet = !walletClient && !onAction;
 
-  const handleConfirmAmount = async (rawAmount: string) => {
-    if (!flow.state.view || flow.state.view !== "amount-input") return;
-    const market = flow.state.market;
+  const resetFlow = () => {
+    marketTx.reset();
+    vaultTx.reset();
+    setSelected(null);
+    setView("opportunities");
+  };
 
-    if (onAction) {
+  const handleBack = () => {
+    marketTx.reset();
+    vaultTx.reset();
+    setView("opportunities");
+  };
+
+  const handleConfirmAmount = async (rawAmount: string) => {
+    if (!selected) return;
+
+    if (onAction && selected.kind === "market") {
       const result = await client.buildSupplyCalldata({
-        protocolId: market.platform.protocolId,
-        platformId: market.platform.platformId,
-        token: market.token.address,
+        protocolId: selected.market.platform.protocolId,
+        platformId: selected.market.platform.platformId,
+        token: selected.market.token.address,
         amount: rawAmount,
         userAddress: userAddress ?? "",
       });
-      if (result.isOk()) {
-        onAction(market, result.value);
-      }
-      flow.reset();
+      if (result.isOk()) onAction(selected.market, result.value);
+      resetFlow();
+      return;
+    }
+
+    if (onAction && selected.kind === "vault") {
+      const result = await client.buildVaultDepositCalldata({
+        vaultId: selected.vault.vaultId,
+        amount: rawAmount,
+        userAddress: userAddress ?? "",
+      });
+      if (result.isOk()) onAction(selected.vault, result.value);
+      resetFlow();
       return;
     }
 
     if (!walletClient) return;
 
-    flow.confirmAmount(rawAmount);
-    tx.execute({
-      market,
+    setConfirmedAmount(rawAmount);
+    setView("transaction");
+
+    if (selected.kind === "market") {
+      marketTx.execute({
+        market: selected.market,
+        userAddress: userAddress ?? "",
+        amount: rawAmount,
+      });
+      return;
+    }
+
+    vaultTx.execute({
+      vault: selected.vault,
       userAddress: userAddress ?? "",
       amount: rawAmount,
     });
   };
 
-  const handleDone = () => {
-    tx.reset();
-    flow.reset();
-  };
-
-  const handleBack = () => {
-    tx.reset();
-    flow.goBack();
-  };
-
+  const isLoading = marketQuery.isLoading || (includeVaults && vaultQuery.isLoading);
   if (isLoading) {
     return <WidgetSkeleton />;
   }
 
-  if (error) {
+  if (marketQuery.error || (includeVaults && vaultQuery.error)) {
     const errorStyle: CSSProperties = {
       fontSize: "13px",
       color: "#ff6b6b",
@@ -124,9 +164,10 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
     return <div style={errorStyle}>Failed to load opportunities</div>;
   }
 
-  const markets = data?.markets ?? [];
+  const markets = marketQuery.data?.markets ?? [];
+  const vaults = includeVaults ? vaultQuery.data?.vaults ?? [] : [];
 
-  if (markets.length === 0) {
+  if (markets.length === 0 && vaults.length === 0) {
     const emptyStyle: CSSProperties = {
       fontSize: "13px",
       color: "#ffffff80",
@@ -147,11 +188,27 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
     flexDirection: "column",
     gap: "8px",
   };
+  const sectionLabelStyle: CSSProperties = {
+    fontSize: "11px",
+    color: "#ffffff99",
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    marginTop: "8px",
+    marginBottom: "4px",
+  };
+  const separatorStyle: CSSProperties = {
+    border: "none",
+    borderTop: "1px solid #ffffff1f",
+    margin: "8px 0 4px 0",
+  };
+
+  const vaultList = limit ? vaults.slice(0, limit) : vaults;
+  const marketList = limit ? markets.slice(0, limit) : markets;
 
   return (
     <div style={{ overflow: "hidden" }}>
       <AnimatePresence mode="wait" custom={direction}>
-        {flow.state.view === "transaction" && (
+        {view === "transaction" && selected?.kind === "market" && (
           <motion.div
             key="transaction"
             custom={direction}
@@ -163,19 +220,43 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
           >
             <WidgetHeader title="Transaction" />
             <TransactionFlow
-              market={flow.state.market}
-              amount={flow.state.amount}
-              steps={tx.steps}
-              onRetry={tx.retry}
-              onDone={handleDone}
-              onStartOver={handleDone}
-              isPending={tx.isPending}
-              isSuccess={tx.isSuccess}
+              market={selected.market}
+              amount={confirmedAmount}
+              steps={marketTx.steps}
+              onRetry={marketTx.retry}
+              onDone={resetFlow}
+              onStartOver={resetFlow}
+              isPending={marketTx.isPending}
+              isSuccess={marketTx.isSuccess}
             />
           </motion.div>
         )}
 
-        {flow.state.view === "amount-input" && (
+        {view === "transaction" && selected?.kind === "vault" && (
+          <motion.div
+            key="vault-transaction"
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={spring}
+          >
+            <WidgetHeader title="Transaction" />
+            <VaultTransactionFlow
+              vault={selected.vault}
+              amount={confirmedAmount}
+              steps={vaultTx.steps}
+              onRetry={vaultTx.retry}
+              onDone={resetFlow}
+              onStartOver={resetFlow}
+              isPending={vaultTx.isPending}
+              isSuccess={vaultTx.isSuccess}
+            />
+          </motion.div>
+        )}
+
+        {view === "amount-input" && selected?.kind === "market" && (
           <motion.div
             key="amount-input"
             custom={direction}
@@ -187,7 +268,7 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
           >
             <WidgetHeader title="Enter Amount" onBack={handleBack} />
             <AmountInput
-              market={flow.state.market}
+              market={selected.market}
               defaultAmount={amount}
               onConfirm={handleConfirmAmount}
               onBack={handleBack}
@@ -197,7 +278,29 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
           </motion.div>
         )}
 
-        {flow.state.view === "opportunities" && (
+        {view === "amount-input" && selected?.kind === "vault" && (
+          <motion.div
+            key="vault-amount-input"
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={spring}
+          >
+            <WidgetHeader title="Enter Amount" onBack={handleBack} />
+            <VaultAmountInput
+              vault={selected.vault}
+              defaultAmount={amount}
+              onConfirm={handleConfirmAmount}
+              onBack={handleBack}
+              needsWallet={needsWallet}
+              onConnectWallet={onConnectWallet}
+            />
+          </motion.div>
+        )}
+
+        {view === "opportunities" && (
           <motion.div
             key="opportunities"
             custom={direction}
@@ -208,19 +311,75 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
             transition={spring}
           >
             <WidgetHeader
-              title={`${markets[0]?.token.symbol ?? ""} Lending Opportunities`}
+              title={`${tokenAddress ? (markets[0]?.token.symbol ?? vaults[0]?.token.symbol ?? "") : ""} Opportunities`}
             />
             <div style={listStyle}>
-              {(limit ? markets.slice(0, limit) : markets).map((market, i) => (
+              {vaultsFirst && vaultList.length > 0 && (
+                <div style={sectionLabelStyle}>Superlend Vaults</div>
+              )}
+              {vaultsFirst &&
+                vaultList.map((vault, i) => (
+                  <motion.div
+                    key={`vault-${vault.vaultId}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ ...spring, delay: i * 0.04 }}
+                  >
+                    <VaultOpportunityCard
+                      vault={vault}
+                      onSelect={(v) => {
+                        setSelected({ kind: "vault", vault: v });
+                        setView("amount-input");
+                      }}
+                    />
+                  </motion.div>
+                ))}
+              {vaultsFirst && vaultList.length > 0 && marketList.length > 0 && (
+                <hr style={separatorStyle} />
+              )}
+              {marketList.length > 0 && (
+                <div style={sectionLabelStyle}>Lending Markets</div>
+              )}
+              {marketList.map((market, i) => (
                 <motion.div
-                  key={market.platform.platformId}
+                  key={`market-${market.platform.platformId}`}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ ...spring, delay: i * 0.04 }}
+                  transition={{ ...spring, delay: (vaultList.length + i) * 0.04 }}
                 >
-                  <MarketCard market={market} onSelect={handleSelectMarket} />
+                  <MarketCard
+                    market={market}
+                    onSelect={(m) => {
+                      setSelected({ kind: "market", market: m });
+                      setView("amount-input");
+                    }}
+                  />
                 </motion.div>
               ))}
+              {!vaultsFirst && vaultList.length > 0 && marketList.length > 0 && (
+                <hr style={separatorStyle} />
+              )}
+              {!vaultsFirst && vaultList.length > 0 && (
+                <>
+                  <div style={sectionLabelStyle}>Superlend Vaults</div>
+                  {vaultList.map((vault, i) => (
+                    <motion.div
+                      key={`vault-tail-${vault.vaultId}`}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ ...spring, delay: (marketList.length + i) * 0.04 }}
+                    >
+                      <VaultOpportunityCard
+                        vault={vault}
+                        onSelect={(v) => {
+                          setSelected({ kind: "vault", vault: v });
+                          setView("amount-input");
+                        }}
+                      />
+                    </motion.div>
+                  ))}
+                </>
+              )}
             </div>
           </motion.div>
         )}
@@ -229,21 +388,24 @@ const WidgetContent: React.FC<WidgetContentProps> = ({
   );
 };
 
-const SuperLendWidget: React.FC<WidgetProps> = ({
-  apiKey,
-  tokenAddress,
-  amount,
-  chainId,
-  userAddress,
-  variant = "inline",
-  theme: themeOverrides,
-  walletClient,
-  onAction,
-  onConnectWallet,
-  partnerId,
-  limit,
-  baseUrl,
-}) => {
+const SuperLendWidget: React.FC<WidgetProps> = (props) => {
+  const {
+    apiKey,
+    tokenAddress,
+    amount,
+    chainId,
+    userAddress,
+    variant = "inline",
+    theme: themeOverrides,
+    walletClient,
+    onConnectWallet,
+    partnerId,
+    limit,
+    includeVaults = true,
+    vaultsFirst = true,
+    baseUrl,
+  } = props;
+
   const resolvedTheme = useMemo(
     () => resolveTheme(themeOverrides),
     [themeOverrides],
@@ -283,15 +445,17 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
   };
 
   const widgetContent = (
-    <WidgetContent
+    <CombinedWidgetContent
       client={client}
       tokenAddress={tokenAddress}
       amount={amount}
       chainId={chainId}
       userAddress={userAddress}
       limit={limit}
+      includeVaults={includeVaults}
+      vaultsFirst={vaultsFirst}
       walletClient={walletClient}
-      onAction={onAction}
+      onAction={props.onAction}
       onConnectWallet={onConnectWallet}
     />
   );

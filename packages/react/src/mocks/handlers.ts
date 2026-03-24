@@ -174,6 +174,47 @@ export const mockSupplyCalldata = {
   },
 };
 
+export const mockVaultMarketsResponse = {
+  success: true,
+  message: "Vault markets fetched successfully",
+  data: {
+    vaults: [
+      {
+        token: mockToken,
+        vaultId: "1-0xvault111111111111111111111111111111111111",
+        defaultDepositToken: mockToken.address,
+        depositTokens: [{ type: "DIRECT", token: mockToken.address }],
+        chainId: 1,
+        vault: {
+          name: "Example Loop Vault",
+          symbol: "exlvUSDC",
+          decimals: 18,
+          logo: "https://example.com/vault.png",
+          type: "LOOP",
+          vaultAddress: "0xvault111111111111111111111111111111111111",
+          description: "Example",
+          profile: "example",
+          vaultRouter: "0xrouter2222222222222222222222222222222222222",
+          depositManager: "0xmgr33333333333333333333333333333333333333",
+          curator: { name: "Superlend", logo: "https://example.com/c.png" },
+        },
+        apy: { base: 4.5, reward: 1.7, net: 6.2, rewardBreakdown: [] },
+      },
+    ],
+    total: 1,
+  },
+};
+
+export const mockVaultDepositCalldata = {
+  success: true,
+  message: "Vault deposit calldata built successfully",
+  data: {
+    to: "0xrouter2222222222222222222222222222222222222",
+    data: "0xf00d",
+    value: "0",
+  },
+};
+
 export const handlers = [
   http.post(`${BASE_URL}/sdk/markets/token`, () => {
     return HttpResponse.json(mockMarketsResponse);
@@ -181,5 +222,13 @@ export const handlers = [
 
   http.post(`${BASE_URL}/sdk/action/supply`, () => {
     return HttpResponse.json(mockSupplyCalldata);
+  }),
+
+  http.post(`${BASE_URL}/sdk/vaults/token`, () => {
+    return HttpResponse.json(mockVaultMarketsResponse);
+  }),
+
+  http.post(`${BASE_URL}/sdk/action/vault/deposit`, () => {
+    return HttpResponse.json(mockVaultDepositCalldata);
   }),
 ];

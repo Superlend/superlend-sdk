@@ -1,4 +1,9 @@
-import type { Market, SupplyCalldataResponse } from "@superlend/sdk";
+import type {
+  Market,
+  SupplyCalldataResponse,
+  VaultDepositCalldataResponse,
+  VaultOpportunity,
+} from "@superlend/sdk";
 
 export type WidgetVariant = "inline" | "dialog";
 
@@ -20,10 +25,10 @@ export type ThemeConfig = {
 
 export type ResolvedTheme = Required<ThemeConfig>;
 
-export type WidgetProps = {
+type WidgetCommonProps = {
   /** API key issued by SuperLend. */
   apiKey: string;
-  /** ERC-20 token address to find lending opportunities for. */
+  /** ERC-20 token address (lending) or default deposit asset (vaults). */
   tokenAddress: string;
   /** Raw token amount in the token's smallest unit. */
   amount: string;
@@ -34,27 +39,34 @@ export type WidgetProps = {
   theme?: ThemeConfig;
   /**
    * Provide a wallet client to let the widget execute transactions directly.
-   * Use `walletAdapters` to wrap viem, ethers, or web3.js clients.
    * Mutually exclusive with `onAction`.
    */
   walletClient?: WalletClient;
   /**
-   * Callback invoked with the selected market and its calldata instead of executing the transaction.
-   * Use this to handle transaction execution yourself.
-   * Mutually exclusive with `walletClient`.
-   */
-  onAction?: (market: Market, calldata: SupplyCalldataResponse) => void;
-  /**
    * Callback invoked when the user tries to proceed without a connected wallet.
-   * Use this to trigger your app's wallet connection flow.
    * The button label changes to "Connect Wallet" when neither `walletClient` nor `onAction` is provided.
    */
   onConnectWallet?: () => void;
   partnerId?: string;
-  /** Maximum number of market opportunities to display. */
+  /** Maximum number of opportunities to display. */
   limit?: number;
+  /** Include Superlend vault opportunities in the same list. */
+  includeVaults?: boolean;
+  /** Show vault opportunities before lending markets. Defaults to true. */
+  vaultsFirst?: boolean;
   /** Override the API base URL. */
   baseUrl?: string;
+};
+
+export type WidgetOpportunity = Market | VaultOpportunity;
+export type WidgetCalldata = SupplyCalldataResponse | VaultDepositCalldataResponse;
+
+export type WidgetProps = WidgetCommonProps & {
+  /**
+   * Callback with selected opportunity and generated calldata.
+   * Mutually exclusive with `walletClient`.
+   */
+  onAction?: (opportunity: WidgetOpportunity, calldata: WidgetCalldata) => void;
 };
 
 /**

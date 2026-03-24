@@ -105,6 +105,95 @@ export type SupplyCalldataResponse = TransactionData & {
   approval?: TransactionData;
 };
 
+/** Curator metadata on vault screener rows. */
+export type VaultCuratorInfo = {
+  name: string;
+  logo?: string;
+};
+
+/** APY fields returned for vault screener opportunities (matches aggregator `ApyWithRewards` / vault APY shape). */
+export type VaultApyInfo = {
+  base: number;
+  reward: number;
+  /** Total APY (base + reward), same semantics as lending `net`. */
+  net: number;
+  rewardBreakdown?: RewardBreakdown[];
+};
+
+/** On-chain vault metadata from the aggregator vault screener. */
+export type VaultOnChainInfo = {
+  name: string;
+  symbol: string;
+  decimals: number;
+  logo: string;
+  /** `"FUND"` (earn) or `"LOOP"` in practice. */
+  type: string;
+  vaultAddress: string;
+  description: string;
+  profile: string;
+  withdrawManager?: string;
+  depositManager?: string;
+  vaultRouter?: string;
+  performanceFee?: number;
+  curator: VaultCuratorInfo;
+};
+
+/**
+ * A Superlend vault opportunity from `getVaultMarkets`.
+ * Matches `VaultScreenerResponseDto` from the aggregator API; extra fields are optional for forward compatibility.
+ */
+export type VaultOpportunity = {
+  token: TokenInfo;
+  vaultId: string;
+  defaultDepositToken: string;
+  depositTokens: { type: string; token: string }[];
+  chainId: number;
+  vault: VaultOnChainInfo;
+  apy: VaultApyInfo;
+  borrowTokens?: TokenInfo[];
+  lendTokens?: TokenInfo[];
+  apr?: {
+    supply?: number;
+    borrow?: number;
+  };
+  risk?: unknown;
+  merklRewards?: unknown[];
+  currentLeverage?: number;
+  totalSupplied?: number | Record<string, number>;
+  totalSuppliedUsd?: number;
+  supplyUsdBreakdown?: Record<string, number>;
+  totalBorrowed?: number | Record<string, number>;
+  totalBorrowedUsd?: number;
+  borrowUsdBreakdown?: Record<string, number>;
+  vaultBalance?: number;
+  vaultBalanceUsd?: number;
+  supplyCap?: number;
+  remainingSupplyCap?: number;
+  totalAssets?: number;
+  totalSupply?: number;
+  tvmUsd?: number;
+};
+
+export type TokenVaultMarketsRequest = {
+  chainId: number;
+  tokenAddress: string;
+};
+
+export type TokenVaultMarketsResponse = {
+  vaults: VaultOpportunity[];
+  total: number;
+};
+
+export type VaultDepositCalldataRequest = {
+  vaultId: string;
+  /** Raw underlying token amount in smallest units. */
+  amount: string;
+  userAddress: string;
+};
+
+/** Same envelope as supply calldata: deposit tx plus optional ERC-20 approval. */
+export type VaultDepositCalldataResponse = SupplyCalldataResponse;
+
 export type HttpErrorCode = "NETWORK_ERROR" | "TIMEOUT" | "ABORT" | "API_ERROR";
 
 /** Typed error returned by all `SuperLendClient` methods. Never thrown — always in the `Err` branch. */

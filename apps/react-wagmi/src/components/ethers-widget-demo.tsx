@@ -1,6 +1,10 @@
-import type { WalletClient, WidgetVariant } from "@superlend/react-sdk";
+import type {
+  WalletClient,
+  WidgetCalldata,
+  WidgetOpportunity,
+  WidgetVariant,
+} from "@superlend/react-sdk";
 import { SuperLendWidget, walletAdapters } from "@superlend/react-sdk";
-import type { Market, SupplyCalldataResponse } from "@superlend/sdk";
 import { useMemo, useState } from "react";
 import { TokenNetworkSelector } from "@/components/token-network-selector";
 import { useDemoConfig } from "@/context/demo-config";
@@ -28,15 +32,16 @@ export function EthersWidgetDemo({ variant, useCallback }: WidgetDemoProps) {
   const walletClient = useSuperlendWalletClient();
   const { theme } = useWidgetTheme();
   const { network, token } = useDemoConfig();
+  const [includeVaults, setIncludeVaults] = useState(true);
   const [lastAction, setLastAction] = useState<{
-    market: Market;
-    calldata: SupplyCalldataResponse;
+    opportunity: WidgetOpportunity;
+    calldata: WidgetCalldata;
   } | null>(null);
 
   const handleAction = useCallback
-    ? (market: Market, calldata: SupplyCalldataResponse) => {
-        setLastAction({ market, calldata });
-        console.log("onAction callback:", { market, calldata });
+    ? (opportunity: WidgetOpportunity, calldata: WidgetCalldata) => {
+        setLastAction({ opportunity, calldata });
+        console.log("onAction callback:", { opportunity, calldata });
       }
     : undefined;
 
@@ -51,6 +56,14 @@ export function EthersWidgetDemo({ variant, useCallback }: WidgetDemoProps) {
           Let's put them to good use
         </p>
       </div>
+      <label className="flex items-center gap-2 text-xs" style={{ color: theme.text }}>
+        <input
+          type="checkbox"
+          checked={includeVaults}
+          onChange={(e) => setIncludeVaults(e.target.checked)}
+        />
+        Include Superlend vaults
+      </label>
       <SuperLendWidget
         apiKey={import.meta.env.VITE_SUPERLEND_API_KEY || ""}
         tokenAddress={token.address}
@@ -59,6 +72,8 @@ export function EthersWidgetDemo({ variant, useCallback }: WidgetDemoProps) {
         userAddress={address}
         variant={variant}
         baseUrl={import.meta.env.VITE_SUPERLEND_API_URL || undefined}
+        includeVaults={includeVaults}
+        vaultsFirst={true}
         walletClient={useCallback ? undefined : walletClient}
         onAction={handleAction}
         onConnectWallet={connect}

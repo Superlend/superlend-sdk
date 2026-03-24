@@ -29,6 +29,12 @@ export const NETWORKS: NetworkConfig[] = [
         demoAmount: "10000000",
       },
       {
+        symbol: "USDe",
+        address: "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
+        decimals: 18,
+        demoAmount: "10000000",
+      },
+      {
         symbol: "DAI",
         address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
         decimals: 18,
