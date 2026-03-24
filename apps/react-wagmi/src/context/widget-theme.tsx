@@ -1,4 +1,4 @@
-import type { ThemeConfig } from "@superlend/react-sdk";
+import type { ResolvedTheme, ThemeConfig } from "@superlend/react-sdk";
 import { createContext, useContext, useState } from "react";
 import {
   ACCENT_COLORS,
@@ -9,7 +9,7 @@ import {
 } from "@/config/theme-palettes";
 
 type WidgetThemeContextValue = {
-  theme: ThemeConfig;
+  theme: ResolvedTheme;
   background: BackgroundOption;
   accent: AccentColor;
   radius: string;
@@ -34,7 +34,7 @@ export function WidgetThemeProvider({
   const [background, setBackgroundState] = useState(DEFAULT_BG);
   const [accent, setAccentState] = useState(DEFAULT_ACCENT);
   const [radius, setRadiusState] = useState(DEFAULT_RADIUS);
-  const [theme, setTheme] = useState<ThemeConfig>(
+  const [theme, setTheme] = useState<ResolvedTheme>(
     buildTheme(DEFAULT_BG, DEFAULT_ACCENT, DEFAULT_RADIUS),
   );
 

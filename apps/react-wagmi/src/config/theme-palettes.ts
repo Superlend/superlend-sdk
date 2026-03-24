@@ -1,4 +1,4 @@
-import type { ThemeConfig } from "@superlend/react-sdk";
+import type { ResolvedTheme } from "@superlend/react-sdk";
 
 export type BackgroundOption = {
   name: string;
@@ -146,7 +146,7 @@ export function buildTheme(
   background: BackgroundOption,
   accent: AccentColor,
   radius: string,
-): ThemeConfig {
+): ResolvedTheme {
   const colors = background.isDark ? accent.dark : accent.light;
   return {
     bg: background.bg,
@@ -155,6 +155,8 @@ export function buildTheme(
     text: background.text,
     radius,
     border: background.border,
+    positive: "#16a34a",
+    negative: "#dc2626",
   };
 }
 

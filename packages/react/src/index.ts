@@ -9,6 +9,7 @@ export { usePortfolio } from "./hooks/portfolio.hooks";
 export { useTransaction } from "./hooks/transaction.hooks";
 
 export type {
+  ResolvedTheme,
   ThemeConfig,
   WalletClient,
   WidgetProps,
