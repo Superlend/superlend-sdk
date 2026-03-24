@@ -126,4 +126,11 @@
   html {
     @apply font-sans;
   }
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+  [data-rk] {
+    display: contents;
+  }
 }

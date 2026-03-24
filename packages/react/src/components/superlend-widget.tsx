@@ -31,7 +31,7 @@ type CombinedSelectedOpportunity =
 type CombinedWidgetContentProps = {
   client: SuperLendClient;
   tokenAddress: string;
-  amount: string;
+  amount?: string;
   chainId: number;
   userAddress?: string;
   limit?: number;
@@ -74,7 +74,7 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
   const [selected, setSelected] = useState<CombinedSelectedOpportunity | null>(
     null,
   );
-  const [confirmedAmount, setConfirmedAmount] = useState<string>(amount);
+  const [confirmedAmount, setConfirmedAmount] = useState<string>(amount ?? "");
 
   const prevViewRef = useRef(view);
   const viewOrder = ["opportunities", "amount-input", "transaction"] as const;
@@ -291,7 +291,7 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
             <WidgetHeader title="Enter Amount" onBack={handleBack} />
             <VaultAmountInput
               vault={selected.vault}
-              defaultAmount={amount}
+              defaultAmount={amount ?? ""}
               onConfirm={handleConfirmAmount}
               onBack={handleBack}
               needsWallet={needsWallet}
@@ -388,24 +388,23 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
   );
 };
 
-const SuperLendWidget: React.FC<WidgetProps> = (props) => {
-  const {
-    apiKey,
-    tokenAddress,
-    amount,
-    chainId,
-    userAddress,
-    variant = "inline",
-    theme: themeOverrides,
-    walletClient,
-    onConnectWallet,
-    partnerId,
-    limit,
-    includeVaults = true,
-    vaultsFirst = true,
-    baseUrl,
-  } = props;
-
+const SuperLendWidget: React.FC<WidgetProps> = ({
+  apiKey,
+  tokenAddress,
+  initialAmount,
+  chainId,
+  userAddress,
+  variant = "inline",
+  theme: themeOverrides,
+  walletClient,
+  onAction,
+  onConnectWallet,
+  partnerId,
+  limit,
+  includeVaults = true,
+  vaultsFirst = true,
+  baseUrl,
+}) => {
   const resolvedTheme = useMemo(
     () => resolveTheme(themeOverrides),
     [themeOverrides],
@@ -448,14 +447,14 @@ const SuperLendWidget: React.FC<WidgetProps> = (props) => {
     <CombinedWidgetContent
       client={client}
       tokenAddress={tokenAddress}
-      amount={amount}
+      amount={initialAmount}
       chainId={chainId}
       userAddress={userAddress}
       limit={limit}
       includeVaults={includeVaults}
       vaultsFirst={vaultsFirst}
       walletClient={walletClient}
-      onAction={props.onAction}
+      onAction={onAction}
       onConnectWallet={onConnectWallet}
     />
   );

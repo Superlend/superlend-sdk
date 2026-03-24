@@ -11,7 +11,7 @@ const spring = { type: "spring" as const, stiffness: 300, damping: 30 };
 
 type AmountInputProps = {
   market: Market;
-  defaultAmount: string;
+  defaultAmount?: string;
   onConfirm: (rawAmount: string) => void;
   onBack: () => void;
   needsWallet?: boolean;

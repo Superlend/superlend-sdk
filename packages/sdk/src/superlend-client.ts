@@ -5,6 +5,8 @@ import type {
   ApiResponse,
   ClientConfig,
   HttpError,
+  PortfolioRequest,
+  PortfolioResponse,
   SupplyCalldataRequest,
   SupplyCalldataResponse,
   TokenMarketsRequest,
@@ -99,6 +101,25 @@ export class SuperLendClient {
   ): ResultAsync<TokenVaultMarketsResponse, HttpError> {
     return request<ApiResponse<TokenVaultMarketsResponse>>(
       `${this.baseUrl}/sdk/vaults/token`,
+      {
+        method: "POST",
+        body: params as unknown as Record<string, unknown>,
+        headers: this.headers,
+        timeout: this.timeout,
+        retries: this.retries,
+      },
+    ).map((res) => res.data);
+  }
+
+  /**
+   * Returns the user's lending and borrowing positions across all supported protocols.
+   * Optionally filter by chain, platform type, or specific market IDs.
+   */
+  getPortfolio(
+    params: PortfolioRequest,
+  ): ResultAsync<PortfolioResponse, HttpError> {
+    return request<ApiResponse<PortfolioResponse>>(
+      `${this.baseUrl}/sdk/portfolio`,
       {
         method: "POST",
         body: params as unknown as Record<string, unknown>,

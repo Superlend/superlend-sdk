@@ -217,6 +217,86 @@ export type ClientConfig = {
   retries?: number;
 };
 
+/** Platform types supported by the portfolio endpoint. */
+export type PlatformType =
+  | "AAVE_V3"
+  | "COMPOUND_V2"
+  | "MORPHO"
+  | "FLUID"
+  | "EULER"
+  | "MORPHO_VAULT"
+  | "MORPHO_MARKET"
+  | "FLUID_VAULT"
+  | "FLUID_LEND"
+  | "CUSTOM";
+
+export type PortfolioMarketId = {
+  protocolId: number;
+  platformId?: string;
+};
+
+export type PortfolioRequest = {
+  /** EVM address of the wallet to fetch positions for. */
+  userAddress: string;
+  /** Filter by chain IDs. */
+  chainIds?: number[];
+  /** Filter by platform types. */
+  types?: PlatformType[];
+  /** Filter by specific market IDs. */
+  marketIds?: PortfolioMarketId[];
+};
+
+/** APY breakdown for a portfolio position. */
+export type PositionApy = {
+  base: number;
+  reward: number;
+  net: number;
+  rewardBreakdown: RewardBreakdown[];
+};
+
+/** A single supply or borrow position within a platform. */
+export type Position = {
+  type: "LEND" | "BORROW";
+  platformId: string;
+  token: TokenInfo;
+  ltv: number;
+  lltv: number;
+  canUseAsCollateral: boolean;
+  amount: number;
+  amountUsd: number;
+  apy: PositionApy;
+  avg_7d: number | null;
+  avg_30d: number | null;
+};
+
+/** Platform-level info returned by the portfolio endpoint. */
+export type PortfolioPlatform = {
+  name: string;
+  displayName: string;
+  platformName: string;
+  protocolId: number;
+  platformId: string;
+  chainId: number;
+  logo: string;
+  type: string;
+  protocolData?: Record<string, unknown>;
+};
+
+/** A group of positions under a single platform. */
+export type PlatformPosition = {
+  platform: PortfolioPlatform;
+  positions: Position[];
+  totalLendUsd: number;
+  totalBorrowUsd: number;
+  healthFactor: number | null;
+};
+
+export type PortfolioResponse = {
+  positions: PlatformPosition[];
+  netSupplyUsd: number;
+  netBorrowUsd: number;
+};
+
 export type RequestOptions = {
   method?: "GET" | "POST";
   body?: Record<string, unknown>;
