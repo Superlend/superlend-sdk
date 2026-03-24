@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import type React from "react";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo } from "react";
-import { resolveTheme, ThemeContext } from "../context/theme.context";
+import { resolveTheme, ThemeContext, useTheme } from "../context/theme.context";
 import { usePortfolio } from "../hooks/portfolio.hooks";
 import { injectStyles } from "../styles/inject.utils";
 import type { ThemeConfig } from "../types";
@@ -41,10 +41,7 @@ const PortfolioContent: React.FC<{
   types?: PlatformType[];
   marketIds?: PortfolioMarketId[];
 }> = ({ client, userAddress, chainIds, types, marketIds }) => {
-  const theme = useMemo(
-    () => resolveTheme(),
-    [],
-  );
+  const theme = useTheme();
 
   const { data, isLoading, error } = usePortfolio(client, {
     userAddress,
@@ -112,6 +109,7 @@ const PortfolioContent: React.FC<{
 };
 
 const ManageButton: React.FC = () => {
+  const theme = useTheme();
   const buttonStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -121,7 +119,7 @@ const ManageButton: React.FC = () => {
     fontSize: "13px",
     fontWeight: 600,
     fontFamily: "inherit",
-    color: "#ffffff",
+    color: theme.text,
     background: "none",
     border: "none",
     cursor: "pointer",
@@ -182,8 +180,7 @@ const PortfolioWidget: React.FC<PortfolioWidgetProps> = ({
   const scrollStyle: CSSProperties = {
     flex: 1,
     overflowY: "auto",
-    paddingLeft: "16px",
-    paddingRight: "16px",
+    padding: "0 16px 16px",
     scrollbarGutter: "stable both-edges",
     scrollbarWidth: "thin",
     scrollbarColor: `${resolvedTheme.border} transparent`,
