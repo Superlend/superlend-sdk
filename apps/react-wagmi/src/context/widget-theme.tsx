@@ -8,11 +8,12 @@ type WidgetThemeContextValue = {
 };
 
 const DEFAULT_THEME: ThemeConfig = {
-  bg: "#1a1a2e",
-  primary: "#00d395",
-  accent: "#00d395",
-  text: "#ffffff",
+  bg: "#ffffff",
+  primary: "#0969da",
+  accent: "#218bff",
+  text: "#1f2328",
   radius: "8px",
+  border: "rgba(0,0,0,0.15)",
 };
 
 const WidgetThemeContext = createContext<WidgetThemeContextValue | null>(null);

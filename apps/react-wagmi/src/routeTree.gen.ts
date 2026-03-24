@@ -14,7 +14,8 @@ import { Route as EthersRouteRouteImport } from './routes/ethers/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WagmiIndexRouteImport } from './routes/wagmi/index'
 import { Route as EthersIndexRouteImport } from './routes/ethers/index'
-import { Route as WagmiDialogRouteImport } from './routes/wagmi/dialog'
+import { Route as WagmiPortfolioRouteImport } from './routes/wagmi/portfolio'
+import { Route as WagmiAggregatorsRouteImport } from './routes/wagmi/aggregators'
 import { Route as EthersDialogRouteImport } from './routes/ethers/dialog'
 
 const WagmiRouteRoute = WagmiRouteRouteImport.update({
@@ -42,9 +43,14 @@ const EthersIndexRoute = EthersIndexRouteImport.update({
   path: '/',
   getParentRoute: () => EthersRouteRoute,
 } as any)
-const WagmiDialogRoute = WagmiDialogRouteImport.update({
-  id: '/dialog',
-  path: '/dialog',
+const WagmiPortfolioRoute = WagmiPortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => WagmiRouteRoute,
+} as any)
+const WagmiAggregatorsRoute = WagmiAggregatorsRouteImport.update({
+  id: '/aggregators',
+  path: '/aggregators',
   getParentRoute: () => WagmiRouteRoute,
 } as any)
 const EthersDialogRoute = EthersDialogRouteImport.update({
@@ -58,14 +64,16 @@ export interface FileRoutesByFullPath {
   '/ethers': typeof EthersRouteRouteWithChildren
   '/wagmi': typeof WagmiRouteRouteWithChildren
   '/ethers/dialog': typeof EthersDialogRoute
-  '/wagmi/dialog': typeof WagmiDialogRoute
+  '/wagmi/aggregators': typeof WagmiAggregatorsRoute
+  '/wagmi/portfolio': typeof WagmiPortfolioRoute
   '/ethers/': typeof EthersIndexRoute
   '/wagmi/': typeof WagmiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ethers/dialog': typeof EthersDialogRoute
-  '/wagmi/dialog': typeof WagmiDialogRoute
+  '/wagmi/aggregators': typeof WagmiAggregatorsRoute
+  '/wagmi/portfolio': typeof WagmiPortfolioRoute
   '/ethers': typeof EthersIndexRoute
   '/wagmi': typeof WagmiIndexRoute
 }
@@ -75,7 +83,8 @@ export interface FileRoutesById {
   '/ethers': typeof EthersRouteRouteWithChildren
   '/wagmi': typeof WagmiRouteRouteWithChildren
   '/ethers/dialog': typeof EthersDialogRoute
-  '/wagmi/dialog': typeof WagmiDialogRoute
+  '/wagmi/aggregators': typeof WagmiAggregatorsRoute
+  '/wagmi/portfolio': typeof WagmiPortfolioRoute
   '/ethers/': typeof EthersIndexRoute
   '/wagmi/': typeof WagmiIndexRoute
 }
@@ -86,18 +95,26 @@ export interface FileRouteTypes {
     | '/ethers'
     | '/wagmi'
     | '/ethers/dialog'
-    | '/wagmi/dialog'
+    | '/wagmi/aggregators'
+    | '/wagmi/portfolio'
     | '/ethers/'
     | '/wagmi/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ethers/dialog' | '/wagmi/dialog' | '/ethers' | '/wagmi'
+  to:
+    | '/'
+    | '/ethers/dialog'
+    | '/wagmi/aggregators'
+    | '/wagmi/portfolio'
+    | '/ethers'
+    | '/wagmi'
   id:
     | '__root__'
     | '/'
     | '/ethers'
     | '/wagmi'
     | '/ethers/dialog'
-    | '/wagmi/dialog'
+    | '/wagmi/aggregators'
+    | '/wagmi/portfolio'
     | '/ethers/'
     | '/wagmi/'
   fileRoutesById: FileRoutesById
@@ -145,11 +162,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EthersIndexRouteImport
       parentRoute: typeof EthersRouteRoute
     }
-    '/wagmi/dialog': {
-      id: '/wagmi/dialog'
-      path: '/dialog'
-      fullPath: '/wagmi/dialog'
-      preLoaderRoute: typeof WagmiDialogRouteImport
+    '/wagmi/portfolio': {
+      id: '/wagmi/portfolio'
+      path: '/portfolio'
+      fullPath: '/wagmi/portfolio'
+      preLoaderRoute: typeof WagmiPortfolioRouteImport
+      parentRoute: typeof WagmiRouteRoute
+    }
+    '/wagmi/aggregators': {
+      id: '/wagmi/aggregators'
+      path: '/aggregators'
+      fullPath: '/wagmi/aggregators'
+      preLoaderRoute: typeof WagmiAggregatorsRouteImport
       parentRoute: typeof WagmiRouteRoute
     }
     '/ethers/dialog': {
@@ -177,12 +201,14 @@ const EthersRouteRouteWithChildren = EthersRouteRoute._addFileChildren(
 )
 
 interface WagmiRouteRouteChildren {
-  WagmiDialogRoute: typeof WagmiDialogRoute
+  WagmiAggregatorsRoute: typeof WagmiAggregatorsRoute
+  WagmiPortfolioRoute: typeof WagmiPortfolioRoute
   WagmiIndexRoute: typeof WagmiIndexRoute
 }
 
 const WagmiRouteRouteChildren: WagmiRouteRouteChildren = {
-  WagmiDialogRoute: WagmiDialogRoute,
+  WagmiAggregatorsRoute: WagmiAggregatorsRoute,
+  WagmiPortfolioRoute: WagmiPortfolioRoute,
   WagmiIndexRoute: WagmiIndexRoute,
 }
 

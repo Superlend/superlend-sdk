@@ -1,16 +1,19 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
 import { DemoConfigProvider } from "@/context/demo-config";
+import { DemoSettingsProvider } from "@/context/demo-settings";
 import { WidgetThemeProvider } from "@/context/widget-theme";
 
 export const Route = createRootRoute({
   component: () => (
     <WidgetThemeProvider>
       <DemoConfigProvider>
-        <div className="min-h-svh">
-          <Outlet />
-          <Footer />
-        </div>
+        <DemoSettingsProvider>
+          <div className="flex h-svh flex-col">
+            <Header />
+            <Outlet />
+          </div>
+        </DemoSettingsProvider>
       </DemoConfigProvider>
     </WidgetThemeProvider>
   ),
