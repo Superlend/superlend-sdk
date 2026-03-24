@@ -16,6 +16,10 @@ export type ThemeConfig = {
   radius?: string;
   /** Border colour for the widget container and card borders. */
   border?: string;
+  /** Colour for positive values (e.g. supply APY). Defaults to green. */
+  positive?: string;
+  /** Colour for negative values (e.g. borrow APY). Defaults to red. */
+  negative?: string;
 };
 
 export type ResolvedTheme = Required<ThemeConfig>;
@@ -25,8 +29,8 @@ export type WidgetProps = {
   apiKey: string;
   /** ERC-20 token address to find lending opportunities for. */
   tokenAddress: string;
-  /** Raw token amount in the token's smallest unit. */
-  amount: string;
+  /** Raw token amount in the token's smallest unit. Pre-fills the amount input. */
+  initialAmount?: string;
   chainId: number;
   /** Connected wallet address. Used to build calldata. */
   userAddress?: string;

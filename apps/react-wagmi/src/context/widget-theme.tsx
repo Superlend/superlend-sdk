@@ -1,19 +1,28 @@
-import type { ThemeConfig } from "@superlend/react-sdk";
+import type { ResolvedTheme, ThemeConfig } from "@superlend/react-sdk";
 import { createContext, useContext, useState } from "react";
+import {
+  ACCENT_COLORS,
+  type AccentColor,
+  BACKGROUNDS,
+  type BackgroundOption,
+  buildTheme,
+} from "@/config/theme-palettes";
 
 type WidgetThemeContextValue = {
-  theme: ThemeConfig;
+  theme: ResolvedTheme;
+  background: BackgroundOption;
+  accent: AccentColor;
+  radius: string;
+  setBackground: (bg: BackgroundOption) => void;
+  setAccent: (accent: AccentColor) => void;
+  setRadius: (radius: string) => void;
   updateTheme: (key: keyof ThemeConfig, value: string) => void;
   setPalette: (palette: ThemeConfig) => void;
 };
 
-const DEFAULT_THEME: ThemeConfig = {
-  bg: "#1a1a2e",
-  primary: "#00d395",
-  accent: "#00d395",
-  text: "#ffffff",
-  radius: "8px",
-};
+const DEFAULT_BG = BACKGROUNDS[0]; // White
+const DEFAULT_ACCENT = ACCENT_COLORS[0]; // Blue
+const DEFAULT_RADIUS = "8px";
 
 const WidgetThemeContext = createContext<WidgetThemeContextValue | null>(null);
 
@@ -22,7 +31,27 @@ export function WidgetThemeProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [theme, setTheme] = useState<ThemeConfig>(DEFAULT_THEME);
+  const [background, setBackgroundState] = useState(DEFAULT_BG);
+  const [accent, setAccentState] = useState(DEFAULT_ACCENT);
+  const [radius, setRadiusState] = useState(DEFAULT_RADIUS);
+  const [theme, setTheme] = useState<ResolvedTheme>(
+    buildTheme(DEFAULT_BG, DEFAULT_ACCENT, DEFAULT_RADIUS),
+  );
+
+  const setBackground = (bg: BackgroundOption) => {
+    setBackgroundState(bg);
+    setTheme(buildTheme(bg, accent, radius));
+  };
+
+  const setAccent = (a: AccentColor) => {
+    setAccentState(a);
+    setTheme(buildTheme(background, a, radius));
+  };
+
+  const setRadius = (r: string) => {
+    setRadiusState(r);
+    setTheme(buildTheme(background, accent, r));
+  };
 
   const updateTheme = (key: keyof ThemeConfig, value: string) => {
     setTheme((prev) => ({ ...prev, [key]: value }));
@@ -33,7 +62,19 @@ export function WidgetThemeProvider({
   };
 
   return (
-    <WidgetThemeContext.Provider value={{ theme, updateTheme, setPalette }}>
+    <WidgetThemeContext.Provider
+      value={{
+        theme,
+        background,
+        accent,
+        radius,
+        setBackground,
+        setAccent,
+        setRadius,
+        updateTheme,
+        setPalette,
+      }}
+    >
       {children}
     </WidgetThemeContext.Provider>
   );

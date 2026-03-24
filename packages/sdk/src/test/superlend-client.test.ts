@@ -113,7 +113,7 @@ describe("SuperLendClient", () => {
       const client = createClient();
       await client.getTokenMarkets({ tokenAddress: "0xusdc", chainId: 8453 });
 
-      expect(capturedHeaders?.get("x-api-key")).toBe("test-key");
+      expect(capturedHeaders?.get("x-sdk-api-key")).toBe("test-key");
       expect(capturedHeaders?.get("x-partner-id")).toBe("test-partner");
     });
 

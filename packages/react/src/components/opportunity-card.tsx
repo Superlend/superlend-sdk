@@ -24,7 +24,7 @@ const MarketCard: React.FC<MarketCardProps> = ({ market, onSelect }) => {
     textAlign: "left",
     color: theme.text,
     fontFamily: "inherit",
-    fontSize: "14px",
+    fontSize: "0.875rem",
     transition: "background 150ms ease",
   };
 
@@ -42,24 +42,27 @@ const MarketCard: React.FC<MarketCardProps> = ({ market, onSelect }) => {
   };
 
   const platformNameStyle: CSSProperties = {
-    fontSize: "13px",
+    fontSize: "0.8125rem",
     fontWeight: 600,
     color: theme.text,
   };
 
   const protocolStyle: CSSProperties = {
-    fontSize: "11px",
+    fontSize: "0.6875rem",
     color: `${theme.text}99`,
   };
 
+  const apyColor =
+    market.supplyRate.current.net >= 0 ? theme.positive : theme.negative;
+
   const apyStyle: CSSProperties = {
-    fontSize: "16px",
+    fontSize: "1rem",
     fontWeight: 700,
-    color: theme.primary,
+    color: apyColor,
   };
 
   const apyLabelStyle: CSSProperties = {
-    fontSize: "11px",
+    fontSize: "0.6875rem",
     color: `${theme.text}66`,
   };
 

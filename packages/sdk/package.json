@@ -10,7 +10,12 @@
     "directory": "packages/sdk"
   },
   "homepage": "https://github.com/superlend/superlend-sdk/tree/main/packages/sdk",
-  "keywords": ["superlend", "defi", "lending", "sdk"],
+  "keywords": [
+    "superlend",
+    "defi",
+    "lending",
+    "sdk"
+  ],
   "type": "module",
   "exports": {
     ".": {
