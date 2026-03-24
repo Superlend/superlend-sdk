@@ -36,7 +36,6 @@ function SectionLabel({
   );
 }
 
-
 function PanelShell({ children }: { children: ReactNode }) {
   const { theme } = useWidgetTheme();
   return (

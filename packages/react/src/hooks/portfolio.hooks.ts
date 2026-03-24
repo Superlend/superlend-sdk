@@ -22,7 +22,7 @@ const usePortfolio = (client: SuperLendClient, params: UsePortfolioParams) => {
     ],
     queryFn: async () => {
       const result = await client.getPortfolio({
-        userAddress: params.userAddress!,
+        userAddress: params.userAddress ?? "",
         chainIds: params.chainIds,
         types: params.types,
         marketIds: params.marketIds,
