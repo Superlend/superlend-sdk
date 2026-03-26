@@ -4,7 +4,7 @@ import { useDemoConfig } from "@/context/demo-config";
 import { useDemoSettings } from "@/context/demo-settings";
 import { useWidgetTheme } from "@/context/widget-theme";
 
-type CodePreviewMode = "aggregator" | "portfolio";
+type CodePreviewMode = "aggregator" | "portfolio" | "vaults";
 type CodePreviewAdapter = "wagmi" | "ethers";
 
 function useThemeSnippetLines() {
@@ -133,6 +133,79 @@ function usePortfolioSnippet() {
   }, [themeLines]);
 }
 
+function useVaultsSnippet(adapter: CodePreviewAdapter) {
+  const { vaultNetwork, vaultToken } = useDemoConfig();
+  const { variant, useCallback } = useDemoSettings();
+  const themeLines = useThemeSnippetLines();
+
+  return useMemo(() => {
+    const lines: string[] = [];
+
+    if (useCallback) {
+      lines.push(
+        `import { VaultWidget } from "@superlend/react-sdk";`,
+        `import type { VaultOpportunity, VaultDepositCalldataResponse } from "@superlend/sdk";`,
+      );
+    } else {
+      lines.push(
+        `import { VaultWidget, walletAdapters } from "@superlend/react-sdk";`,
+      );
+    }
+
+    lines.push("");
+
+    if (useCallback) {
+      lines.push(
+        `function handleVaultTx(vault: VaultOpportunity, calldata: VaultDepositCalldataResponse) {`,
+        `  // Execute vault deposit tx with your preferred web3 library`,
+        `}`,
+      );
+    } else if (adapter === "ethers") {
+      lines.push(
+        `// Create a wallet client from your ethers signer`,
+        `const walletClient = walletAdapters.fromEthers(signer, { eip1193Provider, chainId });`,
+      );
+    } else {
+      lines.push(
+        `// Create a wallet client from your wagmi/viem wallet`,
+        `const walletClient = walletAdapters.fromViem(wagmiWalletClient, publicClient);`,
+      );
+    }
+
+    lines.push("");
+
+    const props: string[] = [];
+    const push = (prop: string) => props.push(`  ${prop}`);
+    push(`apiKey="your-api-key"`);
+    push(`tokenAddress="${vaultToken.address}"`);
+    push(`initialAmount="${vaultToken.demoAmount}"`);
+    push(`chainId={${vaultNetwork.chainId}}`);
+    push(`userAddress={address}`);
+
+    if (variant !== "inline") {
+      push(`variant="${variant}"`);
+    }
+
+    if (useCallback) {
+      push(`onAction={handleVaultTx}`);
+    } else {
+      push(`walletClient={walletClient}`);
+    }
+
+    if (themeLines.length) {
+      push(`theme={{`);
+      props.push(themeLines.join(",\n"));
+      props.push("  }}");
+    }
+
+    lines.push(`<VaultWidget`);
+    lines.push(...props);
+    lines.push(`/>`);
+
+    return lines.join("\n");
+  }, [vaultNetwork, vaultToken, variant, useCallback, themeLines, adapter]);
+}
+
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   const { theme } = useWidgetTheme();
@@ -168,7 +241,13 @@ export function CodePreview({
 }) {
   const aggregatorCode = useAggregatorSnippet(adapter);
   const portfolioCode = usePortfolioSnippet();
-  const code = mode === "portfolio" ? portfolioCode : aggregatorCode;
+  const vaultCode = useVaultsSnippet(adapter);
+  const code =
+    mode === "portfolio"
+      ? portfolioCode
+      : mode === "vaults"
+        ? vaultCode
+        : aggregatorCode;
   const { theme, background } = useWidgetTheme();
   const [html, setHtml] = useState("");
 

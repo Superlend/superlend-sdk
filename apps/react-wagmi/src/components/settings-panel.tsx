@@ -1,6 +1,8 @@
 import type { WidgetVariant } from "@superlend/react-sdk";
+import { useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { TokenNetworkSelector } from "@/components/token-network-selector";
+import { VaultTokenNetworkSelector } from "@/components/vault-token-network-selector";
 import {
   ACCENT_COLORS,
   BACKGROUNDS,
@@ -170,6 +172,7 @@ export function ThemePanel() {
 
 /** Right pane for adapter routes — wallet + props + theme */
 export function SettingsPanel({ walletButton }: { walletButton?: ReactNode }) {
+  const { location } = useRouterState();
   const { theme } = useWidgetTheme();
   const {
     variant,
@@ -179,6 +182,7 @@ export function SettingsPanel({ walletButton }: { walletButton?: ReactNode }) {
     showCode,
     setShowCode,
   } = useDemoSettings();
+  const isVaultRoute = location.pathname.includes("/vaults");
 
   return (
     <PanelShell>
@@ -191,7 +195,7 @@ export function SettingsPanel({ walletButton }: { walletButton?: ReactNode }) {
 
       <div>
         <SectionLabel theme={theme}>Network & Token</SectionLabel>
-        <TokenNetworkSelector />
+        {isVaultRoute ? <VaultTokenNetworkSelector /> : <TokenNetworkSelector />}
       </div>
 
       <div>

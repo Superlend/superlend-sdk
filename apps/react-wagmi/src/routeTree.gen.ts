@@ -14,8 +14,10 @@ import { Route as EthersRouteRouteImport } from './routes/ethers/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WagmiIndexRouteImport } from './routes/wagmi/index'
 import { Route as EthersIndexRouteImport } from './routes/ethers/index'
+import { Route as WagmiVaultsRouteImport } from './routes/wagmi/vaults'
 import { Route as WagmiPortfolioRouteImport } from './routes/wagmi/portfolio'
 import { Route as WagmiAggregatorsRouteImport } from './routes/wagmi/aggregators'
+import { Route as EthersVaultsRouteImport } from './routes/ethers/vaults'
 import { Route as EthersPortfolioRouteImport } from './routes/ethers/portfolio'
 import { Route as EthersAggregatorsRouteImport } from './routes/ethers/aggregators'
 
@@ -44,6 +46,11 @@ const EthersIndexRoute = EthersIndexRouteImport.update({
   path: '/',
   getParentRoute: () => EthersRouteRoute,
 } as any)
+const WagmiVaultsRoute = WagmiVaultsRouteImport.update({
+  id: '/vaults',
+  path: '/vaults',
+  getParentRoute: () => WagmiRouteRoute,
+} as any)
 const WagmiPortfolioRoute = WagmiPortfolioRouteImport.update({
   id: '/portfolio',
   path: '/portfolio',
@@ -53,6 +60,11 @@ const WagmiAggregatorsRoute = WagmiAggregatorsRouteImport.update({
   id: '/aggregators',
   path: '/aggregators',
   getParentRoute: () => WagmiRouteRoute,
+} as any)
+const EthersVaultsRoute = EthersVaultsRouteImport.update({
+  id: '/vaults',
+  path: '/vaults',
+  getParentRoute: () => EthersRouteRoute,
 } as any)
 const EthersPortfolioRoute = EthersPortfolioRouteImport.update({
   id: '/portfolio',
@@ -71,8 +83,10 @@ export interface FileRoutesByFullPath {
   '/wagmi': typeof WagmiRouteRouteWithChildren
   '/ethers/aggregators': typeof EthersAggregatorsRoute
   '/ethers/portfolio': typeof EthersPortfolioRoute
+  '/ethers/vaults': typeof EthersVaultsRoute
   '/wagmi/aggregators': typeof WagmiAggregatorsRoute
   '/wagmi/portfolio': typeof WagmiPortfolioRoute
+  '/wagmi/vaults': typeof WagmiVaultsRoute
   '/ethers/': typeof EthersIndexRoute
   '/wagmi/': typeof WagmiIndexRoute
 }
@@ -80,8 +94,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ethers/aggregators': typeof EthersAggregatorsRoute
   '/ethers/portfolio': typeof EthersPortfolioRoute
+  '/ethers/vaults': typeof EthersVaultsRoute
   '/wagmi/aggregators': typeof WagmiAggregatorsRoute
   '/wagmi/portfolio': typeof WagmiPortfolioRoute
+  '/wagmi/vaults': typeof WagmiVaultsRoute
   '/ethers': typeof EthersIndexRoute
   '/wagmi': typeof WagmiIndexRoute
 }
@@ -92,8 +108,10 @@ export interface FileRoutesById {
   '/wagmi': typeof WagmiRouteRouteWithChildren
   '/ethers/aggregators': typeof EthersAggregatorsRoute
   '/ethers/portfolio': typeof EthersPortfolioRoute
+  '/ethers/vaults': typeof EthersVaultsRoute
   '/wagmi/aggregators': typeof WagmiAggregatorsRoute
   '/wagmi/portfolio': typeof WagmiPortfolioRoute
+  '/wagmi/vaults': typeof WagmiVaultsRoute
   '/ethers/': typeof EthersIndexRoute
   '/wagmi/': typeof WagmiIndexRoute
 }
@@ -105,8 +123,10 @@ export interface FileRouteTypes {
     | '/wagmi'
     | '/ethers/aggregators'
     | '/ethers/portfolio'
+    | '/ethers/vaults'
     | '/wagmi/aggregators'
     | '/wagmi/portfolio'
+    | '/wagmi/vaults'
     | '/ethers/'
     | '/wagmi/'
   fileRoutesByTo: FileRoutesByTo
@@ -114,8 +134,10 @@ export interface FileRouteTypes {
     | '/'
     | '/ethers/aggregators'
     | '/ethers/portfolio'
+    | '/ethers/vaults'
     | '/wagmi/aggregators'
     | '/wagmi/portfolio'
+    | '/wagmi/vaults'
     | '/ethers'
     | '/wagmi'
   id:
@@ -125,8 +147,10 @@ export interface FileRouteTypes {
     | '/wagmi'
     | '/ethers/aggregators'
     | '/ethers/portfolio'
+    | '/ethers/vaults'
     | '/wagmi/aggregators'
     | '/wagmi/portfolio'
+    | '/wagmi/vaults'
     | '/ethers/'
     | '/wagmi/'
   fileRoutesById: FileRoutesById
@@ -174,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EthersIndexRouteImport
       parentRoute: typeof EthersRouteRoute
     }
+    '/wagmi/vaults': {
+      id: '/wagmi/vaults'
+      path: '/vaults'
+      fullPath: '/wagmi/vaults'
+      preLoaderRoute: typeof WagmiVaultsRouteImport
+      parentRoute: typeof WagmiRouteRoute
+    }
     '/wagmi/portfolio': {
       id: '/wagmi/portfolio'
       path: '/portfolio'
@@ -187,6 +218,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/wagmi/aggregators'
       preLoaderRoute: typeof WagmiAggregatorsRouteImport
       parentRoute: typeof WagmiRouteRoute
+    }
+    '/ethers/vaults': {
+      id: '/ethers/vaults'
+      path: '/vaults'
+      fullPath: '/ethers/vaults'
+      preLoaderRoute: typeof EthersVaultsRouteImport
+      parentRoute: typeof EthersRouteRoute
     }
     '/ethers/portfolio': {
       id: '/ethers/portfolio'
@@ -208,12 +246,14 @@ declare module '@tanstack/react-router' {
 interface EthersRouteRouteChildren {
   EthersAggregatorsRoute: typeof EthersAggregatorsRoute
   EthersPortfolioRoute: typeof EthersPortfolioRoute
+  EthersVaultsRoute: typeof EthersVaultsRoute
   EthersIndexRoute: typeof EthersIndexRoute
 }
 
 const EthersRouteRouteChildren: EthersRouteRouteChildren = {
   EthersAggregatorsRoute: EthersAggregatorsRoute,
   EthersPortfolioRoute: EthersPortfolioRoute,
+  EthersVaultsRoute: EthersVaultsRoute,
   EthersIndexRoute: EthersIndexRoute,
 }
 
@@ -224,12 +264,14 @@ const EthersRouteRouteWithChildren = EthersRouteRoute._addFileChildren(
 interface WagmiRouteRouteChildren {
   WagmiAggregatorsRoute: typeof WagmiAggregatorsRoute
   WagmiPortfolioRoute: typeof WagmiPortfolioRoute
+  WagmiVaultsRoute: typeof WagmiVaultsRoute
   WagmiIndexRoute: typeof WagmiIndexRoute
 }
 
 const WagmiRouteRouteChildren: WagmiRouteRouteChildren = {
   WagmiAggregatorsRoute: WagmiAggregatorsRoute,
   WagmiPortfolioRoute: WagmiPortfolioRoute,
+  WagmiVaultsRoute: WagmiVaultsRoute,
   WagmiIndexRoute: WagmiIndexRoute,
 }
 

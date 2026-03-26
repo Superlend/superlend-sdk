@@ -250,3 +250,20 @@ export const NETWORKS: NetworkConfig[] = [
 
 export const DEFAULT_NETWORK = NETWORKS[0];
 export const DEFAULT_TOKEN = DEFAULT_NETWORK.tokens[0];
+
+const VAULT_TOKEN_SYMBOLS = new Set(["USDC", "USDe", "WBTC", "WXTZ"]);
+const VAULT_NETWORK_CHAIN_IDS = new Set([1, 8453, 42793]);
+
+export const VAULT_NETWORKS: NetworkConfig[] = NETWORKS.filter((network) =>
+  VAULT_NETWORK_CHAIN_IDS.has(network.chainId),
+)
+  .map((network) => ({
+    ...network,
+    tokens: network.tokens.filter((token) =>
+      VAULT_TOKEN_SYMBOLS.has(token.symbol),
+    ),
+  }))
+  .filter((network) => network.tokens.length > 0);
+
+export const DEFAULT_VAULT_NETWORK = VAULT_NETWORKS[0];
+export const DEFAULT_VAULT_TOKEN = DEFAULT_VAULT_NETWORK.tokens[0];
