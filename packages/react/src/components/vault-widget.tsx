@@ -10,8 +10,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { resolveTheme, ThemeContext } from "../context/theme.context";
 import { useVaultMarkets } from "../hooks/vault-opportunities.hooks";
 import { useVaultTransaction } from "../hooks/vault-transaction.hooks";
-import type { ThemeConfig, WalletClient, WidgetVariant } from "../types";
 import { injectStyles } from "../styles/inject.utils";
+import type { ThemeConfig, WalletClient, WidgetVariant } from "../types";
 import { PoweredBy } from "./powered-by";
 import { VaultAmountInput } from "./vault-amount-input";
 import { VaultOpportunityCard } from "./vault-opportunity-card";
@@ -68,11 +68,15 @@ const VaultWidgetContent: React.FC<{
   const vaultQuery = useVaultMarkets(client, { tokenAddress, chainId });
   const vaultTx = useVaultTransaction({ client, walletClient });
 
-  const [view, setView] = useState<"opportunities" | "amount-input" | "transaction">(
-    "opportunities",
+  const [view, setView] = useState<
+    "opportunities" | "amount-input" | "transaction"
+  >("opportunities");
+  const [selectedVault, setSelectedVault] = useState<VaultOpportunity | null>(
+    null,
   );
-  const [selectedVault, setSelectedVault] = useState<VaultOpportunity | null>(null);
-  const [confirmedAmount, setConfirmedAmount] = useState<string>(initialAmount ?? "");
+  const [confirmedAmount, setConfirmedAmount] = useState<string>(
+    initialAmount ?? "",
+  );
 
   const prevViewRef = useRef(view);
   const viewOrder = ["opportunities", "amount-input", "transaction"] as const;

@@ -195,7 +195,11 @@ export function SettingsPanel({ walletButton }: { walletButton?: ReactNode }) {
 
       <div>
         <SectionLabel theme={theme}>Network & Token</SectionLabel>
-        {isVaultRoute ? <VaultTokenNetworkSelector /> : <TokenNetworkSelector />}
+        {isVaultRoute ? (
+          <VaultTokenNetworkSelector />
+        ) : (
+          <TokenNetworkSelector />
+        )}
       </div>
 
       <div>

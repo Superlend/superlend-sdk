@@ -1,10 +1,10 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import type { WalletClient } from "@superlend/react-sdk";
+import { VaultWidget, walletAdapters } from "@superlend/react-sdk";
 import type {
   VaultDepositCalldataResponse,
   VaultOpportunity,
 } from "@superlend/sdk";
-import type { WalletClient } from "@superlend/react-sdk";
-import { VaultWidget, walletAdapters } from "@superlend/react-sdk";
 import { useMemo, useState } from "react";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { CodePreview } from "@/components/code-preview";
@@ -37,7 +37,10 @@ export function WagmiVaultsDemo() {
   } | null>(null);
 
   const handleAction = useCallback
-    ? (opportunity: VaultOpportunity, calldata: VaultDepositCalldataResponse) => {
+    ? (
+        opportunity: VaultOpportunity,
+        calldata: VaultDepositCalldataResponse,
+      ) => {
         setLastAction({ opportunity, calldata });
         console.log("vault onAction callback:", { opportunity, calldata });
       }
@@ -69,7 +72,9 @@ export function WagmiVaultsDemo() {
         />
         {lastAction && (
           <div className="rounded-md border bg-muted p-3">
-            <p className="mb-1 text-xs font-medium">Last vault onAction callback:</p>
+            <p className="mb-1 text-xs font-medium">
+              Last vault onAction callback:
+            </p>
             <pre className="overflow-x-auto text-[10px] leading-relaxed text-muted-foreground">
               {JSON.stringify(lastAction, null, 2)}
             </pre>

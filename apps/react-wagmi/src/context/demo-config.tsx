@@ -27,8 +27,9 @@ export function DemoConfigProvider({
 }) {
   const [network, setNetworkState] = useState<NetworkConfig>(DEFAULT_NETWORK);
   const [token, setToken] = useState<TokenConfig>(DEFAULT_TOKEN);
-  const [vaultNetwork, setVaultNetworkState] =
-    useState<NetworkConfig>(DEFAULT_VAULT_NETWORK);
+  const [vaultNetwork, setVaultNetworkState] = useState<NetworkConfig>(
+    DEFAULT_VAULT_NETWORK,
+  );
   const [vaultToken, setVaultTokenState] =
     useState<TokenConfig>(DEFAULT_VAULT_TOKEN);
 
