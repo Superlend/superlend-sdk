@@ -6,6 +6,7 @@ const NAV_TREE = [
     label: "wagmi",
     children: [
       { to: "/wagmi/aggregators", label: "aggregator" },
+      { to: "/wagmi/vaults", label: "vaults" },
       { to: "/wagmi/portfolio", label: "portfolio" },
     ],
   },
@@ -13,6 +14,7 @@ const NAV_TREE = [
     label: "ethers",
     children: [
       { to: "/ethers/aggregators", label: "aggregator" },
+      { to: "/ethers/vaults", label: "vaults" },
       { to: "/ethers/portfolio", label: "portfolio" },
     ],
   },

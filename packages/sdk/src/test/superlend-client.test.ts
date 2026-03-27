@@ -144,6 +144,85 @@ describe("SuperLendClient", () => {
     });
   });
 
+  const mockVault = {
+    token: mockMarket.token,
+    vaultId: "8453-0xvault",
+    defaultDepositToken: "0xusdc",
+    depositTokens: [{ type: "DIRECT", token: "0xusdc" }],
+    chainId: 8453,
+    vault: {
+      name: "Test Vault",
+      symbol: "tvUSDC",
+      decimals: 18,
+      logo: "https://example.com/vault.png",
+      type: "LOOP",
+      vaultAddress: "0xvault",
+      description: "Test",
+      profile: "test",
+      vaultRouter: "0xrouter",
+      depositManager: "0xmanager",
+      curator: { name: "Superlend", logo: "https://example.com/c.png" },
+    },
+    apy: { base: 4, reward: 1.5, net: 5.5, rewardBreakdown: [] },
+  };
+
+  describe("getVaultMarkets", () => {
+    it("returns vaults on success", async () => {
+      server.use(
+        http.post(`${BASE_URL}/sdk/vaults/token`, () => {
+          return HttpResponse.json({
+            success: true,
+            message: "ok",
+            data: { vaults: [mockVault], total: 1 },
+          });
+        }),
+      );
+
+      const client = createClient();
+      const result = await client.getVaultMarkets({
+        tokenAddress: "0xusdc",
+        chainId: 8453,
+      });
+
+      expect(result.isOk()).toBe(true);
+      if (result.isOk()) {
+        expect(result.value.vaults).toHaveLength(1);
+        expect(result.value.vaults[0].vaultId).toBe("8453-0xvault");
+      }
+    });
+  });
+
+  describe("buildVaultDepositCalldata", () => {
+    it("returns calldata on success", async () => {
+      server.use(
+        http.post(`${BASE_URL}/sdk/action/vault/deposit`, () => {
+          return HttpResponse.json({
+            success: true,
+            message: "ok",
+            data: {
+              to: "0xrouter",
+              data: "0xabc123",
+              value: "0",
+            },
+          });
+        }),
+      );
+
+      const client = createClient();
+      const result = await client.buildVaultDepositCalldata({
+        vaultId: "8453-0xvault",
+        amount: "1000000",
+        userAddress: "0xuser",
+      });
+
+      expect(result.isOk()).toBe(true);
+      if (result.isOk()) {
+        expect(result.value.to).toBe("0xrouter");
+        expect(result.value.data).toBe("0xabc123");
+      }
+    });
+  });
+
   describe("buildSupplyCalldata", () => {
     it("returns calldata on success", async () => {
       server.use(

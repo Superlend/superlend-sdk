@@ -1,17 +1,17 @@
-import type { Market } from "@superlend/sdk";
+import type { VaultOpportunity } from "@superlend/sdk";
 import { motion } from "motion/react";
 import type React from "react";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { useTheme } from "../context/theme.context";
 import { ActionButton } from "./action-button";
-import { SelectedMarket } from "./selected-market";
+import { SelectedVault } from "./selected-vault";
 
 const spring = { type: "spring" as const, stiffness: 300, damping: 30 };
 
-type AmountInputProps = {
-  market: Market;
-  defaultAmount?: string;
+type VaultAmountInputProps = {
+  vault: VaultOpportunity;
+  defaultAmount: string;
   onConfirm: (rawAmount: string) => void;
   onBack: () => void;
   needsWallet?: boolean;
@@ -35,8 +35,8 @@ function humanToRaw(human: string, decimals: number): string {
   return raw;
 }
 
-const AmountInput: React.FC<AmountInputProps> = ({
-  market,
+const VaultAmountInput: React.FC<VaultAmountInputProps> = ({
+  vault,
   defaultAmount,
   onConfirm,
   onBack: _onBack,
@@ -44,10 +44,8 @@ const AmountInput: React.FC<AmountInputProps> = ({
   onConnectWallet,
 }) => {
   const theme = useTheme();
-  const decimals = market.token.decimals;
-  const [value, setValue] = useState(() =>
-    rawToHuman(defaultAmount ?? "", decimals),
-  );
+  const decimals = vault.token.decimals;
+  const [value, setValue] = useState(() => rawToHuman(defaultAmount, decimals));
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
@@ -107,7 +105,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
 
   return (
     <div style={containerStyle}>
-      <SelectedMarket market={market} />
+      <SelectedVault vault={vault} />
       <motion.div
         style={inputWrapperStyle}
         initial={{ opacity: 0, y: 8 }}
@@ -123,7 +121,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
           onChange={handleChange}
           placeholder="0.00"
         />
-        <span style={symbolStyle}>{market.token.symbol}</span>
+        <span style={symbolStyle}>{vault.token.symbol}</span>
       </motion.div>
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -142,4 +140,4 @@ const AmountInput: React.FC<AmountInputProps> = ({
   );
 };
 
-export { AmountInput, type AmountInputProps };
+export { VaultAmountInput, type VaultAmountInputProps };

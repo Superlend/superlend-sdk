@@ -34,8 +34,9 @@ function renderWidget(props?: Partial<Parameters<typeof SuperLendWidget>[0]>) {
       <SuperLendWidget
         apiKey="test-key"
         tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-        amount="10000000"
+        initialAmount="10000000"
         chainId={1}
+        includeVaults={false}
         baseUrl={BASE_URL}
         {...props}
       />
@@ -98,7 +99,7 @@ describe("SuperLendWidget", () => {
     renderWidget();
 
     await waitFor(() => {
-      expect(screen.getByText("USDC Lending Opportunities")).toBeTruthy();
+      expect(screen.getByText("USDC Opportunities")).toBeTruthy();
     });
   });
 
@@ -131,6 +132,85 @@ describe("SuperLendWidget", () => {
 
     await waitFor(() => {
       expect(screen.getByText("No opportunities available")).toBeTruthy();
+    });
+  });
+  it("displays vaults and markets in one list when enabled", async () => {
+    server.use(
+      http.post(`${BASE_URL}/sdk/markets/token`, () => {
+        return HttpResponse.json(mockMarketsResponse);
+      }),
+      http.post(`${BASE_URL}/sdk/vaults/token`, () => {
+        return HttpResponse.json({
+          success: true,
+          message: "ok",
+          data: {
+            vaults: [
+              {
+                token: {
+                  address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                  name: "USD Coin",
+                  symbol: "USDC",
+                  decimals: 6,
+                  logo: null,
+                  priceUsd: 1,
+                },
+                vaultId: "v1",
+                defaultDepositToken:
+                  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                depositTokens: [
+                  {
+                    type: "DIRECT",
+                    token: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                  },
+                ],
+                chainId: 1,
+                vault: {
+                  name: "Test Vault",
+                  symbol: "tvUSDC",
+                  decimals: 18,
+                  logo: "https://example.com/v.png",
+                  type: "LOOP",
+                  vaultAddress: "0xvault",
+                  description: "d",
+                  profile: "p",
+                  curator: { name: "c" },
+                },
+                apy: { base: 1, reward: 1.5, net: 2.5, rewardBreakdown: [] },
+              },
+            ],
+            total: 1,
+          },
+        });
+      }),
+    );
+
+    renderWidget({ includeVaults: true });
+
+    await waitFor(() => {
+      expect(screen.getByText("Test Vault")).toBeTruthy();
+    });
+    expect(screen.getByText("Superlend Vaults")).toBeTruthy();
+    expect(screen.getByText("Lending Markets")).toBeTruthy();
+  });
+
+  it("shows lending markets when vaults are empty", async () => {
+    server.use(
+      http.post(`${BASE_URL}/sdk/markets/token`, () => {
+        return HttpResponse.json(mockMarketsResponse);
+      }),
+      http.post(`${BASE_URL}/sdk/vaults/token`, () => {
+        return HttpResponse.json({
+          success: true,
+          message: "ok",
+          data: { vaults: [], total: 0 },
+        });
+      }),
+    );
+
+    renderWidget({ includeVaults: true });
+
+    await waitFor(() => {
+      expect(screen.getByText("Steakhouse Reservoir USDC")).toBeTruthy();
     });
   });
 });

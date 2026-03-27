@@ -23,5 +23,13 @@ export type {
   TokenInfo,
   TokenMarketsRequest,
   TokenMarketsResponse,
+  TokenVaultMarketsRequest,
+  TokenVaultMarketsResponse,
   TransactionData,
+  VaultApyInfo,
+  VaultCuratorInfo,
+  VaultDepositCalldataRequest,
+  VaultDepositCalldataResponse,
+  VaultOnChainInfo,
+  VaultOpportunity,
 } from "./types";
