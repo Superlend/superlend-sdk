@@ -5,6 +5,8 @@ import type {
   ApiResponse,
   ClientConfig,
   HttpError,
+  OverviewRequest,
+  OverviewResponse,
   PortfolioRequest,
   PortfolioResponse,
   SupplyCalldataRequest,
@@ -101,6 +103,25 @@ export class SuperLendClient {
   ): ResultAsync<TokenVaultMarketsResponse, HttpError> {
     return request<ApiResponse<TokenVaultMarketsResponse>>(
       `${this.baseUrl}/sdk/vaults/token`,
+      {
+        method: "POST",
+        body: params as unknown as Record<string, unknown>,
+        headers: this.headers,
+        timeout: this.timeout,
+        retries: this.retries,
+      },
+    ).map((res) => res.data);
+  }
+
+  /**
+   * Returns a high-level overview of available opportunities for a token on a chain.
+   * Includes top APY and count for opportunities and vaults categories.
+   */
+  getOverview(
+    params: OverviewRequest,
+  ): ResultAsync<OverviewResponse, HttpError> {
+    return request<ApiResponse<OverviewResponse>>(
+      `${this.baseUrl}/sdk/overview`,
       {
         method: "POST",
         body: params as unknown as Record<string, unknown>,
