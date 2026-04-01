@@ -1,8 +1,4 @@
-import type {
-  Market,
-  OverviewCategory,
-  SupplyCalldataResponse,
-} from "@superlend/sdk";
+import type { OverviewCategory } from "@superlend/sdk";
 import { SuperLendClient } from "@superlend/sdk";
 import type React from "react";
 import type { CSSProperties } from "react";
@@ -10,7 +6,13 @@ import { useEffect, useMemo, useState } from "react";
 import { resolveTheme, ThemeContext, useTheme } from "../context/theme.context";
 import { useOverview } from "../hooks/overview.hooks";
 import { injectStyles } from "../styles/inject.utils";
-import type { ThemeConfig, WalletClient, WidgetVariant } from "../types";
+import type {
+  ThemeConfig,
+  WalletClient,
+  WidgetCalldata,
+  WidgetOpportunity,
+  WidgetVariant,
+} from "../types";
 import { PortfolioWidget } from "./portfolio-widget";
 import { PoweredBy } from "./powered-by";
 import { SuperLendWidget } from "./superlend-widget";
@@ -33,7 +35,7 @@ export type OverviewWidgetProps = {
   variant?: WidgetVariant;
   theme?: ThemeConfig;
   walletClient?: WalletClient;
-  onAction?: (market: Market, calldata: SupplyCalldataResponse) => void;
+  onAction?: (opportunity: WidgetOpportunity, calldata: WidgetCalldata) => void;
   onConnectWallet?: () => void;
   partnerId?: string;
   /** Maximum number of market opportunities to display. */

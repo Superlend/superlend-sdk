@@ -1,9 +1,12 @@
 "use client";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import type { WalletClient } from "@superlend/react-sdk";
+import type {
+  WalletClient,
+  WidgetCalldata,
+  WidgetOpportunity,
+} from "@superlend/react-sdk";
 import { OverviewWidget, walletAdapters } from "@superlend/react-sdk";
-import type { Market, SupplyCalldataResponse } from "@superlend/sdk";
 import { useMemo } from "react";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { useDemoConfig } from "@/context/demo-config";
@@ -31,8 +34,8 @@ export function WagmiOverviewDemo() {
   const { variant, useCallback } = useDemoSettings();
 
   const handleAction = useCallback
-    ? (market: Market, calldata: SupplyCalldataResponse) => {
-        console.log("onAction callback:", { market, calldata });
+    ? (opportunity: WidgetOpportunity, calldata: WidgetCalldata) => {
+        console.log("onAction callback:", { opportunity, calldata });
       }
     : undefined;
 

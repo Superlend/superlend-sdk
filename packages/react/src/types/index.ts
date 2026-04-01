@@ -60,6 +60,11 @@ type WidgetCommonProps = {
   vaultsFirst?: boolean;
   /** Override the API base URL. */
   baseUrl?: string;
+  /**
+   * Callback invoked when the back button is clicked on the initial opportunities view.
+   * Use this to navigate back to a parent view (e.g., an overview screen).
+   */
+  onBack?: () => void;
 };
 
 export type WidgetOpportunity = Market | VaultOpportunity;

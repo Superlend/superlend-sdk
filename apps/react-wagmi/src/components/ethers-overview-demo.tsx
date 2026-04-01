@@ -1,5 +1,3 @@
-"use client";
-
 import type {
   WalletClient,
   WidgetCalldata,
@@ -39,13 +37,13 @@ export function EthersOverviewDemo() {
   return (
     <div className="mx-auto w-full max-w-md">
       <OverviewWidget
-        apiKey={process.env.NEXT_PUBLIC_SUPERLEND_API_KEY || ""}
+        apiKey={import.meta.env.VITE_SUPERLEND_API_KEY || ""}
         tokenAddress={token.address}
         initialAmount={token.demoAmount}
         chainId={network.chainId}
         userAddress={address}
         variant={variant}
-        baseUrl={process.env.NEXT_PUBLIC_SUPERLEND_API_URL || undefined}
+        baseUrl={import.meta.env.VITE_SUPERLEND_API_URL || undefined}
         walletClient={useCallback ? undefined : walletClient}
         onAction={handleAction}
         onConnectWallet={connect}

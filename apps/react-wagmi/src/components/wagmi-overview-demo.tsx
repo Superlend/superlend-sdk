@@ -1,5 +1,4 @@
-"use client";
-
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import type {
   WalletClient,
   WidgetCalldata,
@@ -7,24 +6,26 @@ import type {
 } from "@superlend/react-sdk";
 import { OverviewWidget, walletAdapters } from "@superlend/react-sdk";
 import { useMemo } from "react";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { useDemoConfig } from "@/context/demo-config";
 import { useDemoSettings } from "@/context/demo-settings";
-import { useEthersWallet } from "@/context/ethers-wallet";
 import { useWidgetTheme } from "@/context/widget-theme";
 
 function useSuperlendWalletClient(): WalletClient | undefined {
-  const { signer, eip1193Provider, chainId } = useEthersWallet();
+  const { data: wagmiWalletClient } = useWalletClient();
+  const publicClient = usePublicClient();
   return useMemo(
     () =>
-      signer
-        ? walletAdapters.fromEthers(signer, { eip1193Provider, chainId })
+      wagmiWalletClient
+        ? walletAdapters.fromViem(wagmiWalletClient, publicClient)
         : undefined,
-    [signer, eip1193Provider, chainId],
+    [wagmiWalletClient, publicClient],
   );
 }
 
-export function EthersOverviewDemo() {
-  const { address, connect } = useEthersWallet();
+export function WagmiOverviewDemo() {
+  const { address } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const walletClient = useSuperlendWalletClient();
   const { theme } = useWidgetTheme();
   const { network, token } = useDemoConfig();
@@ -39,16 +40,16 @@ export function EthersOverviewDemo() {
   return (
     <div className="mx-auto w-full max-w-md">
       <OverviewWidget
-        apiKey={process.env.NEXT_PUBLIC_SUPERLEND_API_KEY || ""}
+        apiKey={import.meta.env.VITE_SUPERLEND_API_KEY || ""}
         tokenAddress={token.address}
         initialAmount={token.demoAmount}
         chainId={network.chainId}
         userAddress={address}
         variant={variant}
-        baseUrl={process.env.NEXT_PUBLIC_SUPERLEND_API_URL || undefined}
+        baseUrl={import.meta.env.VITE_SUPERLEND_API_URL || undefined}
         walletClient={useCallback ? undefined : walletClient}
         onAction={handleAction}
-        onConnectWallet={connect}
+        onConnectWallet={openConnectModal}
         theme={theme}
       />
     </div>

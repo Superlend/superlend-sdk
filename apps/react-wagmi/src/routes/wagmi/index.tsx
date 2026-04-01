@@ -1,5 +1,6 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { WagmiOverviewDemo } from "@/components/wagmi-overview-demo";
 
 export const Route = createFileRoute("/wagmi/")({
-  component: () => <Navigate to="/wagmi/aggregators" />,
+  component: WagmiOverviewDemo,
 });

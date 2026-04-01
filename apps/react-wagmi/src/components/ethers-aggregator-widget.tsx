@@ -1,4 +1,3 @@
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import type {
   WalletClient,
   WidgetCalldata,
@@ -6,31 +5,28 @@ import type {
 } from "@superlend/react-sdk";
 import { SuperLendWidget, walletAdapters } from "@superlend/react-sdk";
 import { useMemo, useState } from "react";
-import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { CodePreview } from "@/components/code-preview";
 import { useDemoConfig } from "@/context/demo-config";
 import { useDemoSettings } from "@/context/demo-settings";
+import { useEthersWallet } from "@/context/ethers-wallet";
 import { useWidgetTheme } from "@/context/widget-theme";
 
 function useSuperlendWalletClient(): WalletClient | undefined {
-  const { data: wagmiWalletClient } = useWalletClient();
-  const publicClient = usePublicClient();
+  const { signer, eip1193Provider, chainId } = useEthersWallet();
   return useMemo(
     () =>
-      wagmiWalletClient
-        ? walletAdapters.fromViem(wagmiWalletClient, publicClient)
+      signer
+        ? walletAdapters.fromEthers(signer, { eip1193Provider, chainId })
         : undefined,
-    [wagmiWalletClient, publicClient],
+    [signer, eip1193Provider, chainId],
   );
 }
 
-export function WagmiWidgetDemo() {
-  const { address } = useAccount();
-  const { openConnectModal } = useConnectModal();
+export function EthersAggregatorWidgetDemo() {
+  const { address, connect } = useEthersWallet();
   const walletClient = useSuperlendWalletClient();
   const { theme } = useWidgetTheme();
   const { network, token } = useDemoConfig();
-  const [includeVaults, setIncludeVaults] = useState(true);
   const { variant, useCallback, showCode } = useDemoSettings();
   const [lastAction, setLastAction] = useState<{
     opportunity: WidgetOpportunity;
@@ -55,17 +51,6 @@ export function WagmiWidgetDemo() {
             Let's put them to good use
           </p>
         </div>
-        <label
-          className="flex items-center gap-2 text-xs"
-          style={{ color: theme.text }}
-        >
-          <input
-            type="checkbox"
-            checked={includeVaults}
-            onChange={(e) => setIncludeVaults(e.target.checked)}
-          />
-          Include Superlend vaults
-        </label>
         <SuperLendWidget
           apiKey={import.meta.env.VITE_SUPERLEND_API_KEY || ""}
           tokenAddress={token.address}
@@ -74,11 +59,9 @@ export function WagmiWidgetDemo() {
           userAddress={address}
           variant={variant}
           baseUrl={import.meta.env.VITE_SUPERLEND_API_URL || undefined}
-          includeVaults={includeVaults}
-          vaultsFirst={true}
           walletClient={useCallback ? undefined : walletClient}
           onAction={handleAction}
-          onConnectWallet={openConnectModal}
+          onConnectWallet={connect}
           theme={theme}
         />
         {lastAction && (
@@ -90,7 +73,7 @@ export function WagmiWidgetDemo() {
           </div>
         )}
       </div>
-      {showCode && <CodePreview mode="aggregator" />}
+      {showCode && <CodePreview mode="aggregator" adapter="ethers" />}
     </>
   );
 }
