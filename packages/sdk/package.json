@@ -2,7 +2,7 @@
   "name": "@superlend/sdk",
   "version": "0.2.0",
   "description": "TypeScript client for the SuperLend API",
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "author": "SuperLend",
   "repository": {
     "type": "git",
