@@ -1,6 +1,6 @@
 {
   "name": "@superlend/sdk",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "TypeScript client for the SuperLend API",
   "license": "GPL-3.0-only",
   "author": "SuperLend",
