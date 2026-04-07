@@ -40,6 +40,7 @@ type CombinedWidgetContentProps = {
   walletClient?: WidgetProps["walletClient"];
   onAction?: WidgetProps["onAction"];
   onConnectWallet?: WidgetProps["onConnectWallet"];
+  onBack?: WidgetProps["onBack"];
 };
 
 const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
@@ -54,6 +55,7 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
   walletClient,
   onAction,
   onConnectWallet,
+  onBack,
 }) => {
   const marketQuery = useMarkets(client, {
     tokenAddress,
@@ -313,6 +315,7 @@ const CombinedWidgetContent: React.FC<CombinedWidgetContentProps> = ({
           >
             <WidgetHeader
               title={`${tokenAddress ? (markets[0]?.token.symbol ?? vaults[0]?.token.symbol ?? "") : ""} Opportunities`}
+              onBack={onBack}
             />
             <div style={listStyle}>
               {vaultsFirst && vaultList.length > 0 && (
@@ -411,6 +414,7 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
   includeVaults = true,
   vaultsFirst = true,
   baseUrl,
+  onBack,
 }) => {
   const resolvedTheme = useMemo(
     () => resolveTheme(themeOverrides),
@@ -463,6 +467,7 @@ const SuperLendWidget: React.FC<WidgetProps> = ({
       walletClient={walletClient}
       onAction={onAction}
       onConnectWallet={onConnectWallet}
+      onBack={onBack}
     />
   );
 

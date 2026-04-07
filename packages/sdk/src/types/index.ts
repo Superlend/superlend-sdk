@@ -297,6 +297,21 @@ export type PortfolioResponse = {
   netBorrowUsd: number;
 };
 
+export type OverviewCategory = {
+  topApy: number;
+  total: number;
+};
+
+export type OverviewRequest = {
+  chainId: number;
+  tokenAddress: string;
+};
+
+export type OverviewResponse = {
+  opportunities: OverviewCategory;
+  vaults: OverviewCategory;
+};
+
 export type RequestOptions = {
   method?: "GET" | "POST";
   body?: Record<string, unknown>;

@@ -32,6 +32,11 @@ export type PortfolioWidgetProps = {
   partnerId?: string;
   /** Override the API base URL. */
   baseUrl?: string;
+  /**
+   * Callback invoked when the back button is clicked on the header.
+   * Use this to navigate back to a parent view (e.g., an overview screen).
+   */
+  onBack?: () => void;
 };
 
 const PortfolioContent: React.FC<{
@@ -148,6 +153,7 @@ const PortfolioWidget: React.FC<PortfolioWidgetProps> = ({
   theme: themeOverrides,
   partnerId,
   baseUrl,
+  onBack,
 }) => {
   const resolvedTheme = useMemo(
     () => resolveTheme(themeOverrides),
@@ -190,7 +196,7 @@ const PortfolioWidget: React.FC<PortfolioWidgetProps> = ({
     <ThemeContext.Provider value={resolvedTheme}>
       <div style={containerStyle}>
         <div style={{ paddingLeft: "16px", paddingRight: "16px" }}>
-          <WidgetHeader title="Portfolio" />
+          <WidgetHeader title="Portfolio" onBack={onBack} />
         </div>
         <div className="sl-widget-scroll" style={scrollStyle}>
           <PortfolioContent

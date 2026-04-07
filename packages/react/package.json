@@ -2,7 +2,7 @@
   "name": "@superlend/react-sdk",
   "version": "0.2.0",
   "description": "React widget and hooks for SuperLend",
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "author": "SuperLend",
   "repository": {
     "type": "git",
